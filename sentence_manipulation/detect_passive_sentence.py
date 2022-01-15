@@ -1,7 +1,7 @@
 import spacy
 from lemminflect import getInflection, getLemma
 
-from data.identify_inflection import detect_inflection, isolate_auxiliaries
+from sentence_manipulation.detect_inflection import detect_inflection, isolate_auxiliaries
 
 from log import get_logger
 import logging
@@ -21,10 +21,10 @@ def get_first_root(doc):
 def get_first_root_id(doc):
     return list(doc).index(get_first_root(doc))
 
-def find_passive_svo_sentences(root, verbose=1):
-    """Return True if the sentence is in passive voice and has subject, verb, object. Otherwise return false.
+def detect_passive_svo_sentence(root):
+    """Return True if the sentence is in passive voice and has subject, verb, object and is not a question.
+     Otherwise return false.
     :param root: the root (as a SpaCy token) of the sentence to check
-    :param verbose: choose 1 to print the sentence being checked
     :returns: True if the sentence is in passive voice and has subject, verb, object, otherwise False"""
     if root.tag_ == 'VBN':
         # does it have an auxiliary passive verb?
@@ -40,9 +40,11 @@ def find_passive_svo_sentences(root, verbose=1):
                     passive_objects = [dependent for dependent in agentparticle.children if dependent.dep_ == 'pobj']
                     if len(passive_objects) == 1:
                         nounobject = passive_objects[0]
-                        if verbose >= 1:
-                            log.debug("Detected passive SVO sentence: %s" % (root.sent))
+                        log.debug("Detected passive SVO sentence: %s" % (root.sent))
                         return True
-    if verbose >= 1:
-        log.debug("Detected NOT passive SVO sentence: %s" % (root.sent))
+    log.debug("Detected NOT passive SVO sentence: %s" % (root.sent))
     return False
+
+def detect_passive_svo_sentence_from_string(sent, nlp):
+    root = get_first_root(nlp(sent))
+    return detect_passive_svo_sentence(root)
