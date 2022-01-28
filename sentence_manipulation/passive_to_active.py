@@ -74,7 +74,12 @@ def inflect_sentence(doc, tokenid, swap):
         inflected_sentence += replace_verb(aux, getLemma(root.text, upos='VERB')[0])
         inflected_sentence += ' '
     else:
-        inflected_sentence += root.text
+        if root.dep_ == "pobj":
+            inflected_sentence += accusative_to_nominative(root.text)
+        elif root.dep_ == "nsubjpass":
+            inflected_sentence += nominative_to_accusative(root.text)
+        else:
+            inflected_sentence += root.text
         inflected_sentence += ' '
 
     for right in list(root.rights):
@@ -99,4 +104,45 @@ def passive_to_active(sentence):
     agent_id = get_agent_id(doc, get_first_root_id(doc))
     nsubjpass_id = get_nsubjpass_id(doc, get_first_root_id(doc))
     root_id = get_first_root_id(doc)
-    return inflect_sentence(doc, root_id, (agent_id, nsubjpass_id))
+    try:
+        return inflect_sentence(doc, root_id, (agent_id, nsubjpass_id))
+    except IndexError as _:
+        raise ValueError('Cannot inflect sentence: %s' % (sentence, ))
+
+def accusative_to_nominative(word):
+    if word.lower() == 'me':
+        return 'I'
+    elif word.lower() == 'him':
+        return 'he'
+    elif word.lower() == 'her':
+        return 'she'
+    elif word.lower() == 'us':
+        return 'we'
+    elif word.lower() == 'them':
+        return 'they'
+    else:
+        return word
+
+def nominative_to_accusative(word):
+    if word.lower() == 'i':
+        return 'me'
+    elif word.lower() == 'he':
+        return 'him'
+    elif word.lower() == 'she':
+        return 'her'
+    elif word.lower() == 'we':
+        return 'us'
+    elif word.lower() == 'they':
+        return 'them'
+    else:
+        return word
+
+
+if __name__ == '__main__':
+    nlp = spacy.load("en_core_web_sm")
+    sentence = 'They were chased by him.'
+    doc = nlp(sentence)
+    root_id = get_first_root_id(doc)
+    print(get_nsubjpass_id(doc, root_id))
+    print(get_agent_id(doc, root_id))
+    print(passive_to_active(sentence))

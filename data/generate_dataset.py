@@ -1,4 +1,5 @@
 import chardet
+from csv import DictReader
 import glob
 import os
 import spacy
@@ -35,7 +36,7 @@ def process_single_string(textdoc, write_to_absolute_path):
             except ValueError as e:
                 log.error('Error: %s. Offending sentence: %s. Skipping to next sentence.' % (e, sent))
 
-def main():
+def generate_from_all_txt():
     file_list = get_raw_file_list()
     dirpath = os.path.dirname(os.path.realpath(__file__))
     write_to_path = os.path.join(dirpath, 'processed/active_passive.tsv')
@@ -53,6 +54,35 @@ def main():
                 continue
             process_single_string(textdoc, write_to_path)
 
+def generate_from_recent_authors():
+    dirpath = os.path.dirname(os.path.realpath(__file__))
+    metadata_path = os.path.join(dirpath, 'metadata/metadata.csv')
+
+    write_to_path = os.path.join(dirpath, 'processed/active_passive.tsv')
+
+    with open(metadata_path, 'r') as read_obj:
+        # pass the file object to DictReader() to get the DictReader object
+        csv_dict_reader = DictReader(read_obj)
+        # iterate over each line as a ordered dictionary
+        for k, row in enumerate(csv_dict_reader):
+            try:
+                if row['language'] == "['en']" and int(row['authoryearofdeath']) >= 1900:
+                    pass
+                else:
+                    continue
+            except ValueError as e:
+                pass
+            # now trying to locate the corresponding file
+            file_path = os.path.join(dirpath, 'text/' + row['id'] + '_text.txt')
+            print('Trying file %s of around 60000' % (k,))
+            try:
+                with open(file_path, 'r') as read_obj:
+                    textdoc = read_obj.read().replace('\n', ' ')
+                    process_single_string(textdoc, write_to_path)
+            except FileNotFoundError as e:
+                print(e)
+            except ValueError as e:
+                print(e)
 
 if __name__ == '__main__':
-    main()
+    generate_from_recent_authors()
