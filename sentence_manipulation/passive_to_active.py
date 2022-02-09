@@ -189,21 +189,9 @@ def nominative_to_accusative(word):
 
 if __name__ == '__main__':
     nlp = spacy.load("en_core_web_sm")
-    sentence = 'They were chased by him.'
-    # sentence = 'They are held by its tenets, guided by its ideals, thrilled by its hopes, and set to its works of charity and mercy.'
-    # sentence = 'He had been visited by delegations from the great heart of the nation, who assured him that the great heart of the nation yearned for an immediate increase of the duty on various articles which competed with the articles manufactured by the members of the delegation.'
-    # sentence = 'It is divided into three parts, the words of the angel, of St. Elizabeth and of the Church, Devout thoughts on this prayer have been penned by countless clients of Mary in every age.'
-    # sentence = 'The cars are chased by the dog.'
-    doc = nlp(sentence)
-
-    # print(is_pobj_third_pers_sing(doc))
-    # exit()
-
-    for tok in doc:
-        print('%s: %s' % (tok, tok.dep_,))
-    root_id = get_first_root_id(doc)
-    print(get_nsubjpass_id(doc, root_id))
-    print(get_agent_id(doc, root_id))
-    print(passive_to_active(sentence))
-    # detect subject plural/singular
-    # handle multiple passive clauses: done
+    sentences = [
+        'It is divided into three parts, the words of the angel, of St. Elizabeth and of the Church, Devout thoughts on this prayer have been penned by countless clients of Mary in every age.',
+        'BISMARCK brown and Prussian blue, are now excluded from court circles, by command of the Empress.'
+    ]
+    for sent in sentences:
+        print(passive_to_active(sent))
