@@ -1,5 +1,6 @@
 import spacy
 from lemminflect import getInflection, getLemma
+import inflect
 
 from sentence_manipulation.detect_inflection import detect_inflection, isolate_auxiliaries
 from sentence_manipulation.detect_passive_sentence import get_first_root_id
@@ -12,8 +13,42 @@ log = get_logger(__name__, with_logfile=False, level=logging.INFO)
 nlp = spacy.load("en_core_web_sm")
 
 
+def replace_verb_and_change_singular_plural(aux, verb, to_third_pers_sing):
+    inflection = detect_inflection(aux)
+    if inflection == None:
+        raise ValueError('Verb form cannot be determined.')
+    if inflection[0] == 'simple present' and to_third_pers_sing:
+        new_verb = getInflection(verb, 'VBZ')[0]
+    if inflection[0] == 'simple present' and not to_third_pers_sing:
+        new_verb = getInflection(verb, 'VBP')[0]
+    if inflection[0] == 'simple past':
+        new_verb = getInflection(verb, 'VBD')[0]
+    if inflection[0] == 'present progressive' and to_third_pers_sing:
+        new_verb = 'is ' + getInflection(verb, 'VBG')[0]
+    if inflection[0] == 'present progressive' and not to_third_pers_sing:
+        new_verb = 'are ' + getInflection(verb, 'VBG')[0]
+    if inflection[0] == 'past progressive':
+        new_verb = aux[0] + getInflection(verb, 'VBG')[0]
+    if inflection[0] == 'present perfect' and to_third_pers_sing:
+        new_verb = 'has ' + getInflection(verb, 'VBN')[0]
+    if inflection[0] == 'present perfect' and not to_third_pers_sing:
+        new_verb = 'have ' + getInflection(verb, 'VBN')[0]
+    if inflection[0] == 'past perfect':
+        new_verb = 'had ' + getInflection(verb, 'VBN')[0]
+    if inflection[0] == 'simple future':
+        new_verb = 'will ' + getInflection(verb, 'VB')[0]
+    if inflection[0] == 'future perfect':
+        new_verb = 'will have ' + getInflection(verb, 'VBN')[0]
+
+    if inflection[0].split(' ')[0] == 'aux:':
+        if inflection[0].split(' ')[-1] == 'be':
+            new_verb = inflection[0].split(' ')[1] + ' ' + getInflection(verb, 'VB')[0]
+        if inflection[0].split(' ')[-1] == 'been':
+            new_verb = inflection[0].split(' ')[1] + ' have ' + getInflection(verb, 'VBN')[0]
+    return new_verb
+
 def replace_verb(aux, verb):
-    """Return the active voice of a verb given its passive voice.
+    """Return the active voice of a verb given its passive voice, leaving singular/plural unchanged.
     Example: input: (['will', 'have', 'been'], 'target')), output: 'will have targeted'.
     Raises ValueError if verb form cannot be determined.
     :param aux: a list of auxiliary verbs of a passive voice sentence
@@ -53,7 +88,21 @@ def replace_verb(aux, verb):
             new_verb = inflection[0].split(' ')[1] + ' have ' + getInflection(verb, 'VBN')[0]
     return new_verb
 
-def inflect_sentence(doc, tokenid, swap):
+def is_pobj_third_pers_sing(doc):
+    inflect_engine = inflect.engine()
+    root_id = get_first_root_id(doc)
+    agent_id = get_agent_id(doc, root_id)
+    agent_token = doc[agent_id]
+    for tok in agent_token.children:
+        if tok.dep_ == "pobj":
+            if tok.text.lower() in set(['i', 'you', 'we', 'they']):
+                return False
+            elif not inflect_engine.singular_noun(tok.text):
+                return True
+            else:
+                return False
+
+def inflect_sentence(doc, tokenid, swap, level=0):
     assert len(swap) == 2
     inflected_sentence = ''
 
@@ -65,13 +114,13 @@ def inflect_sentence(doc, tokenid, swap):
         root = doc[tokenid]
 
     for left in list(root.lefts):
-        inflected_sentence += inflect_sentence(doc, list(doc).index(left), swap)
+        inflected_sentence += inflect_sentence(doc, list(doc).index(left), swap, level=level+1)
 
-    if root.dep_ == "auxpass" or root.dep_ == "agent" or root.dep_ == "aux":
+    if level<=1 and (root.dep_ == "auxpass" or root.dep_ == "agent" or root.dep_ == "aux"):
         pass
     elif root.dep_ == "ROOT":
         aux = isolate_auxiliaries(doc)
-        inflected_sentence += replace_verb(aux, getLemma(root.text, upos='VERB')[0])
+        inflected_sentence += replace_verb_and_change_singular_plural(aux, getLemma(root.text, upos='VERB')[0], is_pobj_third_pers_sing(doc))
         inflected_sentence += ' '
     else:
         if root.dep_ == "pobj":
@@ -83,7 +132,7 @@ def inflect_sentence(doc, tokenid, swap):
         inflected_sentence += ' '
 
     for right in list(root.rights):
-        inflected_sentence += inflect_sentence(doc, list(doc).index(right), swap)
+        inflected_sentence += inflect_sentence(doc, list(doc).index(right), swap, level=level+1)
     return inflected_sentence
 
 def get_agent_id(doc, root_id):
@@ -141,8 +190,20 @@ def nominative_to_accusative(word):
 if __name__ == '__main__':
     nlp = spacy.load("en_core_web_sm")
     sentence = 'They were chased by him.'
+    # sentence = 'They are held by its tenets, guided by its ideals, thrilled by its hopes, and set to its works of charity and mercy.'
+    # sentence = 'He had been visited by delegations from the great heart of the nation, who assured him that the great heart of the nation yearned for an immediate increase of the duty on various articles which competed with the articles manufactured by the members of the delegation.'
+    # sentence = 'It is divided into three parts, the words of the angel, of St. Elizabeth and of the Church, Devout thoughts on this prayer have been penned by countless clients of Mary in every age.'
+    # sentence = 'The cars are chased by the dog.'
     doc = nlp(sentence)
+
+    # print(is_pobj_third_pers_sing(doc))
+    # exit()
+
+    for tok in doc:
+        print('%s: %s' % (tok, tok.dep_,))
     root_id = get_first_root_id(doc)
     print(get_nsubjpass_id(doc, root_id))
     print(get_agent_id(doc, root_id))
     print(passive_to_active(sentence))
+    # detect subject plural/singular
+    # handle multiple passive clauses: done
