@@ -181,4 +181,4 @@ def count_nonzero_mean_difference(argsorted_list: list) -> int:
 
 if __name__ == '__main__':
     sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
-                               save_npy='data/simple_example_sentences_embedding.npy', truncate=100)
+                               save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)

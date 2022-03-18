@@ -15,3 +15,11 @@
 2. Run embedding.py
 
 3. Do your own stuff with the sentence embeddings
+
+## Active-passive simple sentences results (by Daniel)
+
+1. Run generator.py, embedding.py to generate the necessary data
+2. Run PCA_alternative.py to generate the images results/img/active_passive_simple_sentences_individual_arrows_visualisation.png and active_passive_simple_sentences_visualisation.png:
+   ![Visualisation of active-passive sentences in dimension 2](results/img/active_passive_simple_sentences_visualisation.png)
+   ![Visualisation of active-passive sentences with individual difference vectorsin dimension 2](results/img/active_passive_simple_sentences_individual_arrows_visualisation.png)
+   
