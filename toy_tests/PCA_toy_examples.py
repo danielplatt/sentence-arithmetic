@@ -40,7 +40,7 @@ def two_sets_differences_experiment():
     print('PCA components of difference: %s' % (pca.components_,))
     print('PCA mean of difference: %s' % (pca.mean_,))
     pca.mean_ = None # this changes the behaviour of transform! None makes it so that mean is not subtracted before transforming
-    print('We only computed one principal component. Here it is: ' % (pca.components_,))
+    print('We only computed one principal component. Here it is: %s' % (pca.components_,))
     print('Now projecting the two sets of vectors onto the principal component.')
     A_trans = pca.transform(A)
     B_trans = pca.transform(B)
