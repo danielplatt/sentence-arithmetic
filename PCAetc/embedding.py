@@ -42,7 +42,11 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
             # print(type(sentence))
             # # print(model.encode(sentence))
             # input('!')
-            embeddings_sublist.append(model.encode(sentence).tolist())
+            try:
+                embeddings_sublist.append(model.encode(sentence).tolist())
+            except TypeError as e:
+                print('A sentence cannot be embedded. Sentence: %s. Error: %s.' % (sentence, e,))
+                continue
         embeddings_list.append(embeddings_sublist)
     return np.array(embeddings_list)
 
@@ -67,10 +71,11 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
 def sentences_csv_to_embedding(csv: str,
                                model_str: str = default_model_str,
                                truncate: int = None,
-                               save_npy: str = None) -> np.array:
+                               save_npy: str = None,
+                               csv_separator: str = ',') -> np.array:
     # Read in the csv and do pre-processing
     print(f"Reading {csv}")
-    sentences = pd.read_csv(csv)
+    sentences = pd.read_csv(csv, sep=csv_separator, on_bad_lines='skip')
     try:
         sentences = sentences.drop(columns=['index'])
     except KeyError:
@@ -180,5 +185,7 @@ def count_nonzero_mean_difference(argsorted_list: list) -> int:
 
 
 if __name__ == '__main__':
-    sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
-                               save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
+    # sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
+    #                            save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
+    sentences_csv_to_embedding(csv='../data/processed/active_passive.tsv',
+                               save_npy='../data/processed/active_passive_embedding.npy', truncate=10000, csv_separator='\t')
