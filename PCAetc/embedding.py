@@ -31,17 +31,9 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
 
     sentences_list = sentences.values.tolist()
     embeddings_list = []
-    # print(type(sentences_list))
-    # print(sentences_list[0][1:])
-    # input('!!')
     for sublist in tqdm(sentences_list):
         embeddings_sublist = []
         for sentence in sublist[1:]:
-            # print('!')
-            # print(sentence)
-            # print(type(sentence))
-            # # print(model.encode(sentence))
-            # input('!')
             try:
                 embeddings_sublist.append(model.encode(sentence).tolist())
             except TypeError as e:
@@ -91,6 +83,9 @@ def sentences_csv_to_embedding(csv: str,
         except:
             print(f"Please enter save_npy in the format location/filename.npy")
 
+    print(type(embeddings_array))
+    print(embeddings_array.shape)#
+    exit()
     return embeddings_array
 
 
@@ -188,4 +183,4 @@ if __name__ == '__main__':
     # sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
     #                            save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
     sentences_csv_to_embedding(csv='../data/processed/active_passive.tsv',
-                               save_npy='../data/processed/active_passive_embedding.npy', truncate=10000, csv_separator='\t')
+                               save_npy='../data/processed/active_passive_embedding.npy', truncate=100, csv_separator='\t')
