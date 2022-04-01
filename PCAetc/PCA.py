@@ -5,7 +5,7 @@ from tqdm import tqdm
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-npy= np.load("data/embedded_act_pass.npy")
+npy= np.load("data/simple_example_sentences_embedding.npy")
 aslst = npy.tolist()
  
 def collapse_to_df():

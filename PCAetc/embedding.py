@@ -24,8 +24,13 @@ def sentence_to_embedding(sentence: str,
 # Converts a pandas file of sentences (no index) to a np.array of embeddings
 # Returns a np.array
 def sentences_pd_to_embedding(sentences: pd.DataFrame,
-                              model_str: str = default_model_str) -> np.array:
+                              model_str: str = default_model_str,
+                              csv_has_line_numbers: bool = True) -> np.array:
     # Coverts to a list of lists, then applies the sentence transformer to each item.
+    if csv_has_line_numbers:
+        first_column_index = 1
+    else:
+        first_column_index = 0
     print(f"Using model {model_str}")
     model = SentenceTransformer(model_str)
 
@@ -33,12 +38,12 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
     embeddings_list = []
     for sublist in tqdm(sentences_list):
         embeddings_sublist = []
-        for sentence in sublist[1:]:
-            try:
+        try:
+            for sentence in sublist[first_column_index:]:
                 embeddings_sublist.append(model.encode(sentence).tolist())
-            except TypeError as e:
-                print('A sentence cannot be embedded. Sentence: %s. Error: %s.' % (sentence, e,))
-                continue
+        except TypeError as e:
+            print('A sentence cannot be embedded. Sentence: %s. Error: %s.' % (sentence, e,))
+            continue
         embeddings_list.append(embeddings_sublist)
     return np.array(embeddings_list)
 
@@ -64,7 +69,8 @@ def sentences_csv_to_embedding(csv: str,
                                model_str: str = default_model_str,
                                truncate: int = None,
                                save_npy: str = None,
-                               csv_separator: str = ',') -> np.array:
+                               csv_separator: str = ',',
+                               csv_has_line_numbers: bool = True) -> np.array:
     # Read in the csv and do pre-processing
     print(f"Reading {csv}")
     sentences = pd.read_csv(csv, sep=csv_separator, on_bad_lines='skip')
@@ -75,7 +81,7 @@ def sentences_csv_to_embedding(csv: str,
     if truncate is not None:
         sentences = sentences.truncate(after=truncate - 1)
 
-    embeddings_array = sentences_pd_to_embedding(sentences, model_str)
+    embeddings_array = sentences_pd_to_embedding(sentences, model_str, csv_has_line_numbers=csv_has_line_numbers)
 
     if save_npy is not None:
         try:
@@ -83,9 +89,6 @@ def sentences_csv_to_embedding(csv: str,
         except:
             print(f"Please enter save_npy in the format location/filename.npy")
 
-    print(type(embeddings_array))
-    print(embeddings_array.shape)#
-    exit()
     return embeddings_array
 
 
@@ -178,9 +181,23 @@ def mean_of_mean_difference(argsorted_list: list) -> float:
 def count_nonzero_mean_difference(argsorted_list: list) -> int:
     return np.count_nonzero(argsorted_list)
 
+def compute_simple_example_embeddings():
+    try:
+        sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
+                                   save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
+    except FileNotFoundError as e:
+        print('Cannot find simple example sentences .csv file. Running generator.py should generate this file.')
+        print(e)
+
+def compute_active_passive_literature_embeddings():
+    try:
+        sentences_csv_to_embedding(csv='../data/processed/active_passive.tsv',
+                                   save_npy='../data/processed/active_passive_embedding.npy', truncate=10000, csv_separator='\t', csv_has_line_numbers=False)
+    except FileNotFoundError as e:
+        print('Cannot find active passive from literature sentences .tsv file. Unzipping active_passive.tsv.zip should fix this problem.')
+        print(e)
+
 
 if __name__ == '__main__':
-    # sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
-    #                            save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
-    sentences_csv_to_embedding(csv='../data/processed/active_passive.tsv',
-                               save_npy='../data/processed/active_passive_embedding.npy', truncate=100, csv_separator='\t')
+    # compute_simple_example_embeddings()
+    compute_active_passive_literature_embeddings()

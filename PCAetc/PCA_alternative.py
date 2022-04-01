@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def get_sentence_embeddings(npy_location):
-    emb = np.load(npy_location)
+    emb = np.load(npy_location, allow_pickle=True)
     try:
         assert emb.shape[2]==768
     except AssertionError:
@@ -72,7 +72,8 @@ def plot_active_passive_with_difference_vectors(A_project, B_project):
     plt.show()
 
 def main():
-    emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:100,:]
+    # emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:]
+    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:100,:]
     diff = get_differences(emb)
     basis = get_projection_vectors(diff)
     A_project = np.swapaxes(np.array([
