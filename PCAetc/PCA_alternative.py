@@ -31,7 +31,7 @@ def project(vec, basis):
     '''
     return np.inner(vec, basis[0]), np.inner(vec, basis[1])
 
-def plot_active_passive(A_project, B_project, mean_diff_project):
+def plot_active_passive(A_project, B_project, mean_diff_project, filename='../results/img/active_passive_simple_sentences_visualisation.png'):
     aplot = plt.scatter(*A_project, alpha=0.1)
     bplot = plt.scatter(*B_project, alpha=0.1)
     arrowplot = plt.arrow(x=0, y=0, dx=mean_diff_project[0], dy=mean_diff_project[1], width=.003, facecolor='red')
@@ -42,10 +42,10 @@ def plot_active_passive(A_project, B_project, mean_diff_project):
                loc='lower left',
                ncol=3,
                fontsize=8)
-    plt.savefig('../results/img/active_passive_simple_sentences_visualisation.png')
+    plt.savefig(filename)
     plt.show()
 
-def plot_active_passive_with_difference_vectors(A_project, B_project):
+def plot_active_passive_with_difference_vectors(A_project, B_project, filename='../results/img/active_passive_simple_sentences_individual_arrows_visualisation.png'):
     max_number_of_difference_vectors = 40
     aplot = plt.scatter(*A_project, alpha=0.1)
     bplot = plt.scatter(*B_project, alpha=0.1)
@@ -68,12 +68,12 @@ def plot_active_passive_with_difference_vectors(A_project, B_project):
                loc='lower left',
                ncol=3,
                fontsize=8)
-    plt.savefig('../results/img/active_passive_simple_sentences_individual_arrows_visualisation.png')
+    plt.savefig(filename)
     plt.show()
 
 def main():
     # emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:]
-    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:100,:]
+    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:10000,:]
     diff = get_differences(emb)
     basis = get_projection_vectors(diff)
     A_project = np.swapaxes(np.array([
@@ -85,8 +85,8 @@ def main():
     mean_diff = np.mean(diff, axis=0)
     mean_diff_project = np.array(project(mean_diff, basis))
 
-    plot_active_passive(A_project, B_project, mean_diff_project)
-    plot_active_passive_with_difference_vectors(A_project, B_project)
+    plot_active_passive(A_project, B_project, mean_diff_project, filename='../results/img/active_passive_real_life_sentences_visualisation.png')
+    plot_active_passive_with_difference_vectors(A_project, B_project, filename='../results/img/active_passive_real_life_sentences_individual_arrows_visualisation.png')
 
 
 if __name__ == '__main__':
