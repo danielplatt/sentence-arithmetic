@@ -2,15 +2,8 @@ import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
+from util.data_loading import get_sentence_embeddings
 
-def get_sentence_embeddings(npy_location):
-    emb = np.load(npy_location, allow_pickle=True)
-    try:
-        assert emb.shape[2]==768
-    except AssertionError:
-        raise ValueError('File %s has dimension %s in second index. 768 expected.' % (npy_location, emb.shape[2]))
-    emb = np.swapaxes(emb, 0, 1)
-    return emb
 
 def get_differences(emb):
     return emb[0]-emb[1]
@@ -73,7 +66,7 @@ def plot_active_passive_with_difference_vectors(A_project, B_project, filename='
 
 def main():
     # emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:]
-    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:10000,:]
+    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:, :10000, :]
     diff = get_differences(emb)
     basis = get_projection_vectors(diff)
     A_project = np.swapaxes(np.array([
