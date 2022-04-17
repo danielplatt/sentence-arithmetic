@@ -197,7 +197,16 @@ def compute_active_passive_literature_embeddings():
         print('Cannot find active passive from literature sentences .tsv file. Unzipping active_passive.tsv.zip should fix this problem.')
         print(e)
 
+def compute_active_passive_literature_jumbled_embeddings():
+    try:
+        sentences_csv_to_embedding(csv='../data/processed/active_passive_jumbled.tsv',
+                                   save_npy='../data/processed/active_passive_jumbled_embedding.npy', truncate=100, csv_separator='\t', csv_has_line_numbers=False)
+    except FileNotFoundError as e:
+        print('Cannot find active passive jumbled from literature sentences .tsv file. Running jumble_sentences.py should fix this problem.')
+        print(e)
+
 
 if __name__ == '__main__':
     # compute_simple_example_embeddings()
-    compute_active_passive_literature_embeddings()
+    # compute_active_passive_literature_embeddings()
+    compute_active_passive_literature_jumbled_embeddings()
