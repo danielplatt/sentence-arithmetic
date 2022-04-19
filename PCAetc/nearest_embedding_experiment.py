@@ -28,17 +28,17 @@ def find_nearest_embedded_sentence_experiment(embeddings_A, embeddings_B, number
     return nearest_count, len(embeddings_A)
 
 def main():
-    original_embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:5000,:]
-    jumbled_embeddings = get_sentence_embeddings('../data/processed/active_passive_jumbled_embedding.npy')[:,:5000,:]
+    original_embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:10000,:]
+    jumbled_embeddings = get_sentence_embeddings('../data/processed/active_passive_jumbled_embedding.npy')[:,:10000,:]
 
     print('Experiment 1: Original passive-Original active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=5000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=10000)
     print('------------------')
     print('Experiment 2: Original passive-Jumbled active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=5000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=10000)
     print('------------------')
     print('Experiment 3: Original passive-Jumbled passive')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=5000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=10000)
 
 
 
@@ -47,15 +47,15 @@ if __name__ == '__main__':
 
 # Experiment 1: Original passive-Original active
 # Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 5000/5000 [11:06<00:00,  7.50it/s]
-# For 4996/5000 (99.92%) sentences A_i+avgerage_diff is closest to B_i.
+# 100%|██████████| 9977/9977 [43:43<00:00,  3.80it/s]
+# For 9945/9977 (99.68%) sentences A_i+avgerage_diff is closest to B_i.
 # ------------------
 # Experiment 2: Original passive-Jumbled active
-# Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 5000/5000 [10:54<00:00,  7.64it/s]
-# For 4945/5000 (98.9%) sentences A_i+avgerage_diff is closest to B_i.
+#   0%|          | 0/9977 [00:00<?, ?it/s]Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
+# 100%|██████████| 9977/9977 [43:55<00:00,  3.79it/s]
+# For 9844/9977 (98.67%) sentences A_i+avgerage_diff is closest to B_i.
 # ------------------
 # Experiment 3: Original passive-Jumbled passive
 # Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 5000/5000 [10:53<00:00,  7.66it/s]
-# For 4969/5000 (99.38%) sentences A_i+avgerage_diff is closest to B_i.
+# 100%|██████████| 9977/9977 [43:42<00:00,  3.80it/s]
+# For 9886/9977 (99.09%) sentences A_i+avgerage_diff is closest to B_i.
