@@ -44,18 +44,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# Experiment 1: Original passive-Original active
-# Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 9977/9977 [43:43<00:00,  3.80it/s]
-# For 9945/9977 (99.68%) sentences A_i+avgerage_diff is closest to B_i.
-# ------------------
-# Experiment 2: Original passive-Jumbled active
-#   0%|          | 0/9977 [00:00<?, ?it/s]Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 9977/9977 [43:55<00:00,  3.79it/s]
-# For 9844/9977 (98.67%) sentences A_i+avgerage_diff is closest to B_i.
-# ------------------
-# Experiment 3: Original passive-Jumbled passive
-# Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
-# 100%|██████████| 9977/9977 [43:42<00:00,  3.80it/s]
-# For 9886/9977 (99.09%) sentences A_i+avgerage_diff is closest to B_i.

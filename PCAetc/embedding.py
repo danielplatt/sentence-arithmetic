@@ -208,5 +208,5 @@ def compute_active_passive_literature_jumbled_embeddings():
 
 if __name__ == '__main__':
     # compute_simple_example_embeddings()
-    # compute_active_passive_literature_embeddings()
+    compute_active_passive_literature_embeddings()
     compute_active_passive_literature_jumbled_embeddings()
