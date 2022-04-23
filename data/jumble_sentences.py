@@ -27,12 +27,21 @@ def verify_jumbling(
     jumbled_df = pd.read_csv(jumbled_csv, sep=jumbled_csv_separator, on_bad_lines='skip', header=None)
     assert(original_df.shape == jumbled_df.shape)
 
-def main():
-    df = read_data()
+def jumble_file(source_csv, target_csv, csv_separator='\t'):
+    df = read_data(csv=source_csv, csv_separator=csv_separator)
     new_df = df.applymap(jumble_sentence)
-    save_data(new_df)
-    verify_jumbling()
+    save_data(new_df, csv=target_csv, csv_separator=csv_separator)
+    verify_jumbling(
+        original_csv=source_csv,
+        original_csv_separator=csv_separator,
+        jumbled_csv=target_csv,
+        jumbled_csv_separator=csv_separator
+    )
 
 
 if __name__ == '__main__':
-    main()
+    # jumble_file('processed/active_passive.tsv', 'processed/active_passive_jumbled.tsv', csv_separator='\t')
+    jumble_file(
+        '../PCAetc/data/simple_example_sentences.csv',
+        '../PCAetc/data/simple_example_sentences_jumbled.csv',
+        csv_separator=',')
