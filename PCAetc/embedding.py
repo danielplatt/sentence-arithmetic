@@ -177,7 +177,6 @@ def mean_difference_fn(array_in: typing.Union[str, np.array],
 def mean_of_mean_difference(argsorted_list: list) -> float:
     return np.mean(argsorted_list)
 
-
 def count_nonzero_mean_difference(argsorted_list: list) -> int:
     return np.count_nonzero(argsorted_list)
 
@@ -187,6 +186,14 @@ def compute_simple_example_embeddings():
                                    save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
     except FileNotFoundError as e:
         print('Cannot find simple example sentences .csv file. Running generator.py should generate this file.')
+        print(e)
+
+def compute_simple_example_jumbled_embeddings():
+    try:
+        sentences_csv_to_embedding(csv='data/simple_example_sentences_jumbled.csv',
+                                   save_npy='data/simple_example_sentences_jumbled_embedding.npy', truncate=10000)
+    except FileNotFoundError as e:
+        print('Cannot find active passive jumbled from literature sentences .tsv file. Running jumble_sentences.py should fix this problem.')
         print(e)
 
 def compute_active_passive_literature_embeddings():
@@ -208,5 +215,6 @@ def compute_active_passive_literature_jumbled_embeddings():
 
 if __name__ == '__main__':
     # compute_simple_example_embeddings()
-    compute_active_passive_literature_embeddings()
-    compute_active_passive_literature_jumbled_embeddings()
+    compute_simple_example_jumbled_embeddings()
+    # compute_active_passive_literature_embeddings()
+    # compute_active_passive_literature_jumbled_embeddings()

@@ -65,8 +65,10 @@ def plot_active_passive_with_difference_vectors(A_project, B_project, filename='
     plt.show()
 
 def main():
-    # emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:]
-    emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:, :10000, :]
+    emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:]
+    # emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:, :10000, :]
+    print(emb.shape)
+    exit()
     diff = get_differences(emb)
     basis = get_projection_vectors(diff)
     A_project = np.swapaxes(np.array([

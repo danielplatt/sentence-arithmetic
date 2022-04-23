@@ -27,9 +27,9 @@ def find_nearest_embedded_sentence_experiment(embeddings_A, embeddings_B, number
     print('For %s/%s (%s%%) sentences A_i+avgerage_diff is closest to B_i.' % (nearest_count, len(embeddings_A), round(nearest_count/len(embeddings_A)*100, 2)))
     return nearest_count, len(embeddings_A)
 
-def main():
-    original_embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:10000,:]
-    jumbled_embeddings = get_sentence_embeddings('../data/processed/active_passive_jumbled_embedding.npy')[:,:10000,:]
+def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, truncate=10000):
+    original_embeddings = get_sentence_embeddings(original_sentences_npy)[:, :truncate, :]
+    jumbled_embeddings = get_sentence_embeddings(jumbled_sentences_npy)[:, :truncate, :]
 
     print('Experiment 1: Original passive-Original active')
     find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=10000)
@@ -41,6 +41,14 @@ def main():
     find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=10000)
 
 
-
 if __name__ == '__main__':
-    main()
+    # run_experiment_suite(
+    #     '../data/processed/active_passive_embedding.npy',
+    #     '../data/processed/active_passive_jumbled_embedding.npy',
+    #     truncate=10000
+    # )
+    run_experiment_suite(
+        'data/simple_example_sentences_embedding.npy',
+        'data/simple_example_sentences_jumbled_embedding.npy',
+        truncate=1000
+    )
