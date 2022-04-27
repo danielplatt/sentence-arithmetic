@@ -30,15 +30,21 @@
    ![Visualisation of active-passive sentences in dimension 2](results/img/active_passive_real_life_sentences_visualisation.png)
    ![Visualisation of active-passive sentences with individual difference vectorsin dimension 2](results/img/active_passive_real_life_sentences_individual_arrows_visualisation.png)
    
-## Testing if the (active sentence)-(passive sentence) is roughly the same for all sentences
+## Testing if the (active sentence)-(passive sentence) is roughly the same for all sentences for real life sentences
 
 1. Unzip the file `data/processed/active_passive.tsv.zip` in the same folder
-2. Run `jumble_sentences.py`. This generates `active_passive_jumbled.tsv`.
+2. Run `jumble_sentences.py` and make sure the line 
+`jumble_file('processed/active_passive.tsv', 'processed/active_passive_jumbled.tsv', csv_separator='\t')`
+   is not commented out. This generates `active_passive_jumbled.tsv`.
 3. Run `embedding.py` and make sure the lines 
  `compute_active_passive_literature_embeddings()` and 
  `compute_active_passive_literature_jumbled_embeddings()`
 are not commented out. This generates the files `active_passive_embedding.npy` and `active_passive_jumbled_embedding.npy`.
-4. `Run nearest_embedding_experiment.py`. This generates the following output:
+4. `Run nearest_embedding_experiment.py` and make sure the lines `    run_experiment_suite(
+        '../data/processed/active_passive_embedding.npy',
+        '../data/processed/active_passive_jumbled_embedding.npy',
+        truncate=10000
+    )` are not commented out. This generates the following output:
 ```
 Experiment 1: Original passive-Original active
 Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
@@ -63,3 +69,39 @@ Experiments 2 and 3 are analogues of this, were the set {A1, A2, ..., A9977} is 
 
 Interpretation of results:
 the success rate is highest if {B1, B2, ..., B9977} are the corresponding passive voice vectors. This is evidence for the fact that the average_diff does not just detect the removal of the word "by", but contains the a style difference of sentences.
+
+## Testing (active sentence)-(passive sentence) for simple example sentences
+
+1. Run `generator.py`. This generates the file `simple_example_sentences.csv`.
+   
+2. Run `jumble_sentences.py` and make sure the line 
+`jumble_file(
+        '../PCAetc/data/simple_example_sentences.csv',
+        '../PCAetc/data/simple_example_sentences_jumbled.csv',
+        csv_separator=',')`
+   is not commented out. This generates the file `simple_example_sentences_jumbled.csv`.
+
+3. Run `embedding.py` and make sure the lines     `compute_active_passive_literature_embeddings()` and `compute_active_passive_literature_jumbled_embeddings()` are not commented out. This generates the files `simple_example_sentences_embedding.npy` and `simple_example_sentences_jumbled_embedding.npy`.
+
+4. Run `nearest_embedding_experiment.py` and make sure the lines `run_experiment_suite(
+        'data/simple_example_sentences_embedding.npy',
+        'data/simple_example_sentences_jumbled_embedding.npy',
+        truncate=50000
+    )`
+   are not commented out. This generates the output:
+```   
+Experiment 1: Original passive-Original active
+Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
+100%|██████████| 50000/50000 [18:33:57<00:00,  1.34s/it]
+For 49493/50000 (98.99%) sentences A_i+avgerage_diff is closest to B_i.
+------------------
+Experiment 2: Original passive-Jumbled active
+Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
+100%|██████████| 50000/50000 [19:43:14<00:00,  1.42s/it]
+For 47440/50000 (94.88%) sentences A_i+avgerage_diff is closest to B_i.
+------------------
+Experiment 3: Original passive-Jumbled passive
+Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
+100%|██████████| 50000/50000 [20:47:28<00:00,  1.50s/it]
+For 48411/50000 (96.82%) sentences A_i+avgerage_diff is closest to B_i.
+```

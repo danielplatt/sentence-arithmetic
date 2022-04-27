@@ -78,4 +78,4 @@ def act_pass_gen(n: int,
 
 
 if __name__ == '__main__':
-    print(act_pass_gen(10000, scramble=False, save_csv='data/simple_example_sentences.csv'))
+    print(act_pass_gen(50000, scramble=False, save_csv='data/simple_example_sentences.csv'))

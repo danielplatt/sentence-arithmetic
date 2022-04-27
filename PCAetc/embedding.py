@@ -183,7 +183,7 @@ def count_nonzero_mean_difference(argsorted_list: list) -> int:
 def compute_simple_example_embeddings():
     try:
         sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
-                                   save_npy='data/simple_example_sentences_embedding.npy', truncate=10000)
+                                   save_npy='data/simple_example_sentences_embedding.npy', truncate=50000)
     except FileNotFoundError as e:
         print('Cannot find simple example sentences .csv file. Running generator.py should generate this file.')
         print(e)
@@ -191,7 +191,7 @@ def compute_simple_example_embeddings():
 def compute_simple_example_jumbled_embeddings():
     try:
         sentences_csv_to_embedding(csv='data/simple_example_sentences_jumbled.csv',
-                                   save_npy='data/simple_example_sentences_jumbled_embedding.npy', truncate=10000)
+                                   save_npy='data/simple_example_sentences_jumbled_embedding.npy', truncate=50000)
     except FileNotFoundError as e:
         print('Cannot find active passive jumbled from literature sentences .tsv file. Running jumble_sentences.py should fix this problem.')
         print(e)

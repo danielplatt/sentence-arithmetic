@@ -32,13 +32,13 @@ def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, truncate
     jumbled_embeddings = get_sentence_embeddings(jumbled_sentences_npy)[:, :truncate, :]
 
     print('Experiment 1: Original passive-Original active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=10000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=truncate)
     print('------------------')
     print('Experiment 2: Original passive-Jumbled active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=10000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=truncate)
     print('------------------')
     print('Experiment 3: Original passive-Jumbled passive')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=10000)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=truncate)
 
 
 if __name__ == '__main__':
@@ -50,5 +50,5 @@ if __name__ == '__main__':
     run_experiment_suite(
         'data/simple_example_sentences_embedding.npy',
         'data/simple_example_sentences_jumbled_embedding.npy',
-        truncate=1000
+        truncate=50000
     )
