@@ -155,8 +155,8 @@ def passive_to_active(sentence):
     root_id = get_first_root_id(doc)
     try:
         return inflect_sentence(doc, root_id, (agent_id, nsubjpass_id))
-    except IndexError as _:
-        raise ValueError('Cannot inflect sentence: %s' % (sentence, ))
+    except (IndexError, TypeError) as _:
+        raise ValueError('Cannot make this sentence active voice (maybe already active voice?): %s' % (sentence, ))
 
 def accusative_to_nominative(word):
     if word.lower() == 'me':

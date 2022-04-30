@@ -5,7 +5,10 @@ import logging
 
 log = get_logger(__name__, with_logfile=False, level=logging.INFO)
 
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    spacy.cli.download("en_core_web_sm")
 
 
 def isolate_auxiliaries(doc):
