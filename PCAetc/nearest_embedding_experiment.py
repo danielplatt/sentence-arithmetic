@@ -42,13 +42,13 @@ def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, truncate
 
 
 if __name__ == '__main__':
-    # run_experiment_suite(
-    #     '../data/processed/active_passive_embedding.npy',
-    #     '../data/processed/active_passive_jumbled_embedding.npy',
-    #     truncate=10000
-    # )
     run_experiment_suite(
-        'data/simple_example_sentences_embedding.npy',
-        'data/simple_example_sentences_jumbled_embedding.npy',
-        truncate=50000
+        '../data/processed/active_passive_embedding.npy',
+        '../data/processed/active_passive_jumbled_embedding.npy',
+        truncate=1000
     )
+    # run_experiment_suite(
+    #     'data/simple_example_sentences_embedding.npy',
+    #     'data/simple_example_sentences_jumbled_embedding.npy',
+    #     truncate=50000
+    # )
