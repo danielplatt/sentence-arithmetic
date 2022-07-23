@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya ">
   <link rel="stylesheet" href="css/pico.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -44,6 +44,18 @@
   </section>
 
   <section id="plot">
+    <label for="passive">Passive Sentence</label>
+    <input type="text" id="passive" name="passive" placeholder="Text">
+    <small>Curabitur consequat lacus at lacus porta finibus.</small>
+
+
+
+    <label for="active">Active Sentence</label>
+    <input type="text" id="active" name="active">
+    <small>Curabitur consequat lacus at lacus porta finibus.</small>
+
+    <input type="submit" value="Submit" onclick="event.preventDefault()">
+
     <canvas id="sentences"></canvas>
   </section>
 </main>

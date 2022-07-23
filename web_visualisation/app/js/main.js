@@ -16,8 +16,8 @@ Papa.parse("data/embeddings.csv", {
           data: truncated.map((element) => {
             return [element["active_x_coord"], element["active_y_coord"]]
           }),
-          borderColor: "red",
-          backgroundColor: "purple"
+          borderColor: "#43a047",
+          backgroundColor: "#7cb342"
         },
         {
           label: "Passive",
@@ -27,8 +27,8 @@ Papa.parse("data/embeddings.csv", {
           data: truncated.map((element) => {
             return [element["passive_x_coord"], element["passive_y_coord"]]
           }),
-          borderColor: "blue",
-          backgroundColor: "cyan"
+          borderColor: "#1e88e5",
+          backgroundColor: "#039be5"
         }
       ]
     };
@@ -46,8 +46,7 @@ Papa.parse("data/embeddings.csv", {
             position: "top",
           },
           title: {
-            display: true,
-            text: "Sentences"
+            display: false
           },
           tooltip: {
             callbacks: {
