@@ -1,5 +1,17 @@
 # sentence-arithmetic
 
+## Download ready data
+
+1. `active_passive_full.tsv`. 345877 active/passive sentence pairs: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/EYYXjMFiO-NGoiVrdYq2dVsBncLJqCeIYp6SeI5XPi1xzw?e=EFVcDu
+
+2. `active_passive_full_cleaned.tsv`. 345555 active/passive sentence pairs where pairs from the previous table have been removed if at least one of their sentences generates an error when attempting to embed it: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/ERqk0a7uD59Bgly7lLUkHgMBp7njxmJP3t_jI1mAz4p5Tg?e=NECNLQ
+
+3. `active_passive_embedding_full.npy`. A numpy array of size `(2, 345555, 768)` containing all sentence embeddings: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/Ea56oqCJsxBGtS20i8vUQy4B9dna46wLh6dH-Q8k6yiWiQ?e=V6zSvF
+
+4. `preprocessed_embeddings.csv`. Two-dimensional embeddings together with sentences prepared for the web visualisation: https://emckclac-my.sharepoint.com/:x:/g/personal/k2149901_kcl_ac_uk/EYBzVMrDhtJGr69mlL-RouwBEoO1bX0oMvPMam0xBoSTzw?e=dp5N3B
+
+5. `PCA_basis.json`. The basis of the 2-dimensional subspace of 768-dimensional space used in the generation of preprocessed_embeddings.csv: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/ERx7d8DPd8VHhjwMNLRmaQcBroEUg7nW8m1KxqscMQcovg?e=6bJLaV
+
 ## Data generation:
 
 1. Put .txt files in data/raw (can be in subfolders)
