@@ -29,6 +29,9 @@ Papa.parse("data/embeddings.csv", {
       ]
     };
 
+    Chart.defaults.font.size = 19;
+    Chart.defaults.font.family = "\"Alegreya\", sans-serif";
+
     const chart = new Chart(document.getElementById("sentences"), {
       type: "scatter",
       data: data,
