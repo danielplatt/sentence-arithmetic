@@ -1,7 +1,9 @@
+import csv
 import numpy as np
 from numpy import linalg as LA
 import pandas as pd
 import matplotlib as plt
+import os
 
 import typing
 from tqdm import tqdm
@@ -25,7 +27,8 @@ def sentence_to_embedding(sentence: str,
 # Returns a np.array
 def sentences_pd_to_embedding(sentences: pd.DataFrame,
                               model_str: str = default_model_str,
-                              csv_has_line_numbers: bool = True) -> np.array:
+                              csv_has_line_numbers: bool = True,
+                              return_clean_sentence_list: bool = False) -> np.array:
     # Coverts to a list of lists, then applies the sentence transformer to each item.
     if csv_has_line_numbers:
         first_column_index = 1
@@ -35,17 +38,23 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
     model = SentenceTransformer(model_str)
 
     sentences_list = sentences.values.tolist()
+    clean_sentences = []
     embeddings_list = []
     for sublist in tqdm(sentences_list):
-        embeddings_sublist = []
         try:
+            embeddings_sublist = []
+            # sublist has length 2 for active/passive
             for sentence in sublist[first_column_index:]:
                 embeddings_sublist.append(model.encode(sentence).tolist())
+            embeddings_list.append(embeddings_sublist)
+            clean_sentences.append(sublist)
         except TypeError as e:
             print('A sentence cannot be embedded. Sentence: %s. Error: %s.' % (sentence, e,))
             continue
-        embeddings_list.append(embeddings_sublist)
-    return np.array(embeddings_list)
+    if return_clean_sentence_list:
+        return np.array(embeddings_list), clean_sentences
+    else:
+        return np.array(embeddings_list)
 
 
 # Converts a .csv of sentences to a np.array of embeddings.
@@ -65,16 +74,17 @@ def sentences_pd_to_embedding(sentences: pd.DataFrame,
 # The third index of the array is the embedding, for instance a 768-dimensional vector
 # In the case that the input csv only has 1 column of sentences, a 3-dim array is still returned.
 
-def sentences_csv_to_embedding(csv: str,
+def sentences_csv_to_embedding(csvfile: str,
                                model_str: str = default_model_str,
                                truncate: int = None,
                                save_npy: str = None,
                                csv_separator: str = ',',
                                csv_has_line_numbers: bool = True,
-                               header = 'infer') -> np.array:
+                               header = 'infer',
+                               save_cleaned_sentence_list: bool = False) -> np.array:
     # Read in the csv and do pre-processing
-    print(f"Reading {csv}")
-    sentences = pd.read_csv(csv, sep=csv_separator, on_bad_lines='skip', header=header)
+    print(f"Reading {csvfile}")
+    sentences = pd.read_csv(csvfile, sep=csv_separator, on_bad_lines='skip', header=header)
     try:
         sentences = sentences.drop(columns=['index'])
     except KeyError:
@@ -82,13 +92,23 @@ def sentences_csv_to_embedding(csv: str,
     if truncate is not None:
         sentences = sentences.truncate(after=truncate - 1)
 
-    embeddings_array = sentences_pd_to_embedding(sentences, model_str, csv_has_line_numbers=csv_has_line_numbers)
+    if save_cleaned_sentence_list:
+        embeddings_array, clean_sentences_list = sentences_pd_to_embedding(sentences, model_str, csv_has_line_numbers=csv_has_line_numbers, return_clean_sentence_list=True)
+    else:
+        embeddings_array = sentences_pd_to_embedding(sentences, model_str, csv_has_line_numbers=csv_has_line_numbers)
 
     if save_npy is not None:
         try:
             np.save(save_npy, embeddings_array)
         except:
             print(f"Please enter save_npy in the format location/filename.npy")
+
+    if save_cleaned_sentence_list:
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        write_to_path = os.path.join(dirpath, '../data/processed/active_passive_full_cleaned.tsv')
+        with open(write_to_path, 'w', newline='') as f:
+            for sentencepair in clean_sentences_list:
+                f.write(sentencepair[0] + '\t' + sentencepair[1] + '\n')
 
     return embeddings_array
 
@@ -183,7 +203,7 @@ def count_nonzero_mean_difference(argsorted_list: list) -> int:
 
 def compute_simple_example_embeddings():
     try:
-        sentences_csv_to_embedding(csv='data/simple_example_sentences.csv',
+        sentences_csv_to_embedding(csvfile='data/simple_example_sentences.csv',
                                    save_npy='data/simple_example_sentences_embedding.npy', truncate=50000)
     except FileNotFoundError as e:
         print('Cannot find simple example sentences .csv file. Running generator.py should generate this file.')
@@ -191,7 +211,7 @@ def compute_simple_example_embeddings():
 
 def compute_simple_example_jumbled_embeddings():
     try:
-        sentences_csv_to_embedding(csv='data/simple_example_sentences_jumbled.csv',
+        sentences_csv_to_embedding(csvfile='data/simple_example_sentences_jumbled.csv',
                                    save_npy='data/simple_example_sentences_jumbled_embedding.npy', truncate=50000)
     except FileNotFoundError as e:
         print('Cannot find active passive jumbled from literature sentences .tsv file. Running jumble_sentences.py should fix this problem.')
@@ -199,15 +219,15 @@ def compute_simple_example_jumbled_embeddings():
 
 def compute_active_passive_literature_embeddings():
     try:
-        sentences_csv_to_embedding(csv='../data/processed/active_passive.tsv',
-                                   save_npy='../data/processed/active_passive_embedding.npy', truncate=1000, csv_separator='\t', csv_has_line_numbers=False, header=None)
+        sentences_csv_to_embedding(csvfile='../data/processed/active_passive_full.tsv',
+                                   save_npy='../data/processed/active_passive_embedding_full.npy', truncate=None, csv_separator='\t', csv_has_line_numbers=False, header=None, save_cleaned_sentence_list=True)
     except FileNotFoundError as e:
         print('Cannot find active passive from literature sentences .tsv file. Unzipping active_passive.tsv.zip should fix this problem.')
         print(e)
 
 def compute_active_passive_literature_jumbled_embeddings():
     try:
-        sentences_csv_to_embedding(csv='../data/processed/active_passive_jumbled.tsv',
+        sentences_csv_to_embedding(csvfile='../data/processed/active_passive_jumbled.tsv',
                                    save_npy='../data/processed/active_passive_jumbled_embedding.npy', truncate=10000, csv_separator='\t', csv_has_line_numbers=False, header=None)
     except FileNotFoundError as e:
         print('Cannot find active passive jumbled from literature sentences .tsv file. Running jumble_sentences.py should fix this problem.')

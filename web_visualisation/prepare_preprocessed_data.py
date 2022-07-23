@@ -12,10 +12,10 @@ import logging
 
 
 def main():
-    embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:, :10000, :] # shape=(2, 9977, 768)
+    embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding_full.npy') # shape=(2, -1, 768)
     embeddings = np.transpose(embeddings, (1,0,2))
     num_embeddings = embeddings.shape[0]
-    sentences = pd.read_csv('../data/processed/active_passive.tsv', header=None, sep='\t', on_bad_lines='skip').truncate(after=num_embeddings-1)
+    sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip').truncate(after=num_embeddings-1)
     assert len(sentences) == embeddings.shape[0] # number of sentences should be same as number of embeddings
 
     differences = get_differences(embeddings)

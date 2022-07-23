@@ -54,17 +54,19 @@ def generate_from_all_txt():
                 continue
             process_single_string(textdoc, write_to_path)
 
-def generate_from_recent_authors():
+def generate_from_recent_authors(start_at_id=0, filename_out='active_passive.tsv'):
     dirpath = os.path.dirname(os.path.realpath(__file__))
     metadata_path = os.path.join(dirpath, 'metadata/metadata.csv')
 
-    write_to_path = os.path.join(dirpath, 'processed/active_passive.tsv')
+    write_to_path = os.path.join(dirpath, f'processed/{filename_out}')
 
     with open(metadata_path, 'r') as read_obj:
         # pass the file object to DictReader() to get the DictReader object
         csv_dict_reader = DictReader(read_obj)
         # iterate over each line as a ordered dictionary
         for k, row in enumerate(csv_dict_reader):
+            if k<start_at_id:
+                continue
             try:
                 if row['language'] == "['en']" and int(row['authoryearofdeath']) >= 1900:
                     pass
@@ -85,4 +87,4 @@ def generate_from_recent_authors():
                 print(e)
 
 if __name__ == '__main__':
-    generate_from_recent_authors()
+    generate_from_recent_authors(start_at_id=0, filename_out='active_passive_full.tsv') # paused at 38683
