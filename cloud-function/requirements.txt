@@ -1,2 +1,6 @@
 flask-cors
 functions-framework==3.*
+numpy
+sentence_transformers
+json
+os
