@@ -1,9 +1,11 @@
 const LIMIT = 100
+const FUNCTION_END_POINT = "https://sentence-embedding-eatrmwevgq-ew.a.run.app/";
 
 Papa.parse("data/embeddings.csv", {
   download: true,
   header: true,
   complete: function (raw) {
+    // Massage data into format expected by Chartjs
     const truncated = raw.data.slice(0, LIMIT);
     const data = {
       datasets: [
@@ -23,6 +25,25 @@ Papa.parse("data/embeddings.csv", {
         }
       ]
     };
+
+    // Try to extract inputs from GET parameters
+    const params = new URLSearchParams(window.location.search);
+    const active = params.get("active")
+    const passive = params.get("passive")
+
+    // If we have inputs, send them to Cloud Function.
+    if (active !== null && passive !== null) {
+      const payload = {
+        active: active,
+        passive: passive
+      }
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", FUNCTION_END_POINT, false);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify(payload));
+      console.log(xhr.response);
+    }
 
     const PLUGIN_ID = "sentence";
 
