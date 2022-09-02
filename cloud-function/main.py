@@ -1,7 +1,10 @@
 from flask import jsonify
+from flask_cors import cross_origin
 import functions_framework
 
 
+# TODO needs to be stricter once frontend URL is known
+@cross_origin(allowed_methods=["POST"])
 @functions_framework.http
 def classify_http(request):
     request_json = request.get_json(silent=True)
