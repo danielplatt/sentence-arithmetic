@@ -1,6 +1,6 @@
 from flask import jsonify
-from flask_cors import cross_origin
-import functions_framework
+# from flask_cors import cross_origin
+# import functions_framework
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import json
@@ -9,8 +9,8 @@ from os import path
 
 
 # TODO needs to be stricter once frontend URL is known
-@cross_origin(allowed_methods=["POST"])
-@functions_framework.http
+# @cross_origin(allowed_methods=["POST"])
+# @functions_framework.http
 def classify_http(request):
     request_json = request.get_json(silent=True)
 
@@ -51,7 +51,9 @@ def classify(sentence: str) -> dict:
     model = SentenceTransformer(model_path) # loading model from pretrained_model directory.
     # models can be saved using model.save(model_path)
     embedding = model.encode(sentence).tolist()
-    with open('preprocessed_data/PCA_basis.json') as f:
+
+    json_basis_path = path.join(path.dirname(path.abspath(__file__)), 'preprocessed_data/PCA_basis.json')
+    with open(json_basis_path) as f:
         basis_loaded = json.load(f)
     projected_vector = project_linear_algebra(embedding, basis_loaded)
     return {
@@ -60,5 +62,5 @@ def classify(sentence: str) -> dict:
     }
 
 
-# if __name__ == '__main__':
-#     print(classify('The dog chases the car.'))
+if __name__ == '__main__':
+    print(classify('The dog chases the car.'))
