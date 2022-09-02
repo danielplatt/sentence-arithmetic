@@ -7,21 +7,22 @@ Papa.parse("data/embeddings.csv", {
   complete: function (raw) {
     // Massage data into format expected by Chartjs
     const truncated = raw.data.slice(0, LIMIT);
+
     const data = {
       datasets: [
         {
           label: "Active",
           sentences: truncated.map((element) => ` ${element["active_sentence"]}`),
           data: truncated.map((element) => [element["active_x_coord"], element["active_y_coord"]]),
-          borderColor: "#43a047",
-          backgroundColor: "#7cb342"
+          borderColor: Array(truncated.length).fill("#43a047"),
+          backgroundColor: Array(truncated.length).fill("#7cb342")
         },
         {
           label: "Passive",
           sentences: truncated.map((element) => ` ${element["passive_sentence"]}`),
           data: truncated.map((element) => [element["passive_x_coord"], element["passive_y_coord"]]),
-          borderColor: "#1e88e5",
-          backgroundColor: "#039be5"
+          borderColor: Array(truncated.length).fill("#1e88e5"),
+          backgroundColor: Array(truncated.length).fill("#039be5")
         }
       ]
     };
@@ -33,16 +34,37 @@ Papa.parse("data/embeddings.csv", {
 
     // If we have inputs, send them to Cloud Function.
     if (active !== null && passive !== null) {
+      // Update Form
+      document.getElementsByName("active")[0].value = active;
+      document.getElementsByName("passive")[0].value = passive;
+
+      // Construt payload for Cloud Function
       const payload = {
         active: active,
         passive: passive
       }
 
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", FUNCTION_END_POINT, false);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify(payload));
-      console.log(xhr.response);
+      const request = new XMLHttpRequest();
+      request.open("POST", FUNCTION_END_POINT, false);
+      request.setRequestHeader("Content-Type", "application/json");
+      request.send(JSON.stringify(payload));
+
+      const response = JSON.parse(request.response);
+
+      const activePosition = response.active;
+      const passivePosition = response.passive;
+
+      // add active data
+      data.datasets[0].sentences.push(active);
+      data.datasets[0].data.push([activePosition.x, activePosition.y]);
+      data.datasets[0].borderColor.push("#8e24aa");
+      data.datasets[0].backgroundColor.push("#d81b60");
+
+      // add passive data
+      data.datasets[1].sentences.push(passive);
+      data.datasets[1].data.push([passivePosition.x, passivePosition.y]);
+      data.datasets[1].borderColor.push("#8e24aa");
+      data.datasets[1].backgroundColor.push("#d81b60");
     }
 
     const PLUGIN_ID = "sentence";
