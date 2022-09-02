@@ -5,7 +5,7 @@ Papa.parse("data/embeddings.csv", {
   download: true, header: true, complete: function (raw) {
     // Massage data into format expected by Chartjs
     const truncated = raw.data.slice(0, LIMIT);
-    const data = massageData(truncated);
+    let data = massageData(truncated);
 
     // Try to extract inputs from GET parameters
     const params = new URLSearchParams(window.location.search);
@@ -14,7 +14,7 @@ Papa.parse("data/embeddings.csv", {
 
     // If we have inputs, send them to Cloud Function.
     if (active !== null && passive !== null) {
-      processVoices(data, active, passive);
+      data = extendData(data, active, passive);
     }
 
     // Prepare the plugin to connect active and passive data points
@@ -58,22 +58,13 @@ function massageData(sentences) {
  * @param active
  * @param passive
  */
-function processVoices(data, active, passive) {
+function extendData(data, active, passive) {
   // Update Form
   document.getElementsByName("active")[0].value = active;
   document.getElementsByName("passive")[0].value = passive;
 
-  // Construt payload for Cloud Function
-  const payload = {
-    active: active, passive: passive
-  }
-
-  const request = new XMLHttpRequest();
-  request.open("POST", FUNCTION_END_POINT, false);
-  request.setRequestHeader("Content-Type", "application/json");
-  request.send(JSON.stringify(payload));
-
-  const response = JSON.parse(request.response);
+  const request = fetchEmbeddings(active, passive);
+  const response = JSON.parse(request);
 
   const activePosition = response.active;
   const passivePosition = response.passive;
@@ -89,6 +80,28 @@ function processVoices(data, active, passive) {
   data.datasets[1].data.push([passivePosition.x, passivePosition.y]);
   data.datasets[1].borderColor.push("#8e24aa");
   data.datasets[1].backgroundColor.push("#d81b60");
+
+  return data;
+}
+
+/**
+ * Downloads embeddings from the function end-point and returns them verbatim
+ *
+ * @param active
+ * @param passive
+ * @returns {any}
+ */
+function fetchEmbeddings(active, passive) {
+  // Construct payload for Cloud Function
+  const payload = {
+    active: active, passive: passive
+  }
+
+  const request = new XMLHttpRequest();
+  request.open("POST", FUNCTION_END_POINT, false);
+  request.setRequestHeader("Content-Type", "application/json");
+  request.send(JSON.stringify(payload));
+  return request.response;
 }
 
 /**
