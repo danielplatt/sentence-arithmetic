@@ -1,0 +1,7 @@
+POST https://sentence-embedding-eatrmwevgq-ew.a.run.app/
+Content-Type: application/json
+
+{
+  "active": "The dog chased the car.",
+  "passive": "The car was chased by the dog."
+}
