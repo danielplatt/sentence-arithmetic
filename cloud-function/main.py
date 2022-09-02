@@ -1,6 +1,6 @@
 from flask import jsonify
-from flask_cors import cross_origin
-import functions_framework
+# from flask_cors import cross_origin
+# import functions_framework
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import json
@@ -9,8 +9,8 @@ from os import path
 
 
 # TODO needs to be stricter once frontend URL is known
-@cross_origin(allowed_methods=["POST"])
-@functions_framework.http
+# @cross_origin(allowed_methods=["POST"])
+# @functions_framework.http
 def classify_http(request):
     request_json = request.get_json(silent=True)
 
@@ -47,14 +47,19 @@ def classify(sentence: str) -> dict:
     or 'the car is chases by The dog. ' Need not be grammatically correct or meaningful.
     :return: A two-dimensional vector stored as a dictionary {"x": 0.562397, "y": -0.245144}.
     '''
-    model_path = path.join(path.dirname(path.abspath(__file__)), 'pretrained_model')
+    model_path = path.join(path.dirname(path.abspath(__file__)), 'all-MiniLM-L6-v2_pretrained')
     model = SentenceTransformer(model_path) # loading model from pretrained_model directory.
     # models can be saved using model.save(model_path)
     embedding = model.encode(sentence).tolist()
 
-    json_basis_path = path.join(path.dirname(path.abspath(__file__)), 'preprocessed_data/PCA_basis.json')
+    json_basis_path = path.join(path.dirname(path.abspath(__file__)), 'preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json')
     with open(json_basis_path) as f:
         basis_loaded = json.load(f)
+
+    # TODO: currently, this loads the old, 768-dimensional basis and just drops the last 384 dimensions
+    # Must recompute the basis for the new model
+    basis_loaded = [vector[:384] for vector in basis_loaded]
+
     projected_vector = project_linear_algebra(embedding, basis_loaded)
     return {
         "x": projected_vector[0],
@@ -62,5 +67,5 @@ def classify(sentence: str) -> dict:
     }
 
 
-# if __name__ == '__main__':
-#     print(classify('The dog chases the car.'))
+if __name__ == '__main__':
+    print(classify('The dog chases the car.'))
