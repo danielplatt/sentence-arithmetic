@@ -103,15 +103,32 @@ def is_pobj_third_pers_sing(doc):
                 return False
 
 def inflect_sentence(doc, tokenid, swap, level=0):
-    assert len(swap) == 2
-    inflected_sentence = ''
+    assert len(swap) == 3 or len(swap) == 2
 
-    if tokenid == swap[0]:
-        root = doc[swap[1]]
-    elif tokenid == swap[1]:
-        root = doc[swap[0]]
-    else:
-        root = doc[tokenid]
+    if len(swap) == 2:
+    # swap[0] = agent
+    # swap[1] = nsubjpass
+        if tokenid == swap[0]:
+            root = doc[swap[1]]
+        elif tokenid == swap[1]:
+            root = doc[swap[0]]
+        else:
+            root = doc[tokenid]
+
+    if len(swap) == 3:
+    # swap[0] = agent
+    # swap[1] = nsubjpass
+    # swap[2] = dobj
+        if tokenid == swap[0]:
+            root = doc[swap[2]]
+        elif tokenid == swap[1]:
+            root = doc[swap[0]]
+        elif tokenid == swap[2]:
+            root = doc[swap[1]]
+        else:
+            root = doc[tokenid]
+
+    inflected_sentence = ''
 
     for left in list(root.lefts):
         inflected_sentence += inflect_sentence(doc, list(doc).index(left), swap, level=level+1)
@@ -147,14 +164,28 @@ def get_nsubjpass_id(doc, root_id):
         if tok.dep_ == "nsubjpass":
             return list(doc).index(tok)
 
+def get_dobj_or_oprd(doc, root_id):
+    root = doc[root_id]
+    for tok in root.children:
+        print(tok.text, tok.dep_)
+        if tok.dep_ == "dobj" or tok.dep_== "oprd":
+            return list(doc).index(tok)
+
 def passive_to_active(sentence):
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(sentence)
-    agent_id = get_agent_id(doc, get_first_root_id(doc))
-    nsubjpass_id = get_nsubjpass_id(doc, get_first_root_id(doc))
+    first_root_id = get_first_root_id(doc)
+    agent_id = get_agent_id(doc, first_root_id)
+    nsubjpass_id = get_nsubjpass_id(doc, first_root_id)
+    dobj_id = get_dobj_or_oprd(doc, first_root_id)
+    if dobj_id == None:
+        swap = (agent_id, nsubjpass_id)
+    else:
+        swap = (agent_id, nsubjpass_id, dobj_id)
+    print(len(swap))
     root_id = get_first_root_id(doc)
     try:
-        return inflect_sentence(doc, root_id, (agent_id, nsubjpass_id))
+        return inflect_sentence(doc, root_id, swap)
     except (IndexError, TypeError) as _:
         raise ValueError('Cannot make this sentence active voice (maybe already active voice?): %s' % (sentence, ))
 
@@ -190,8 +221,8 @@ def nominative_to_accusative(word):
 if __name__ == '__main__':
     nlp = spacy.load("en_core_web_sm")
     sentences = [
-        'It is divided into three parts, the words of the angel, of St. Elizabeth and of the Church, Devout thoughts on this prayer have been penned by countless clients of Mary in every age.',
-        'BISMARCK brown and Prussian blue, are now excluded from court circles, by command of the Empress.'
+        'He had been given the best of education by his father, and had early experience in public affairs as governor of a province.',
+        'He was made chancellor by her.'
     ]
     for sent in sentences:
         print(passive_to_active(sent))
