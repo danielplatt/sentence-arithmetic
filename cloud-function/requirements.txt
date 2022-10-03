@@ -1,6 +1,4 @@
-flask-cors
 functions-framework==3.*
+flask-cors
 numpy
 sentence_transformers
-json
-os

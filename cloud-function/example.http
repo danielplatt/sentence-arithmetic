@@ -1,4 +1,4 @@
-POST https://sentence-embedding-eatrmwevgq-ew.a.run.app/
+POST https://sentence-arithmetic-embeddings-mygs3pzknq-df.a.run.app
 Content-Type: application/json
 
 {

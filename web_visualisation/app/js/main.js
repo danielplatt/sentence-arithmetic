@@ -1,5 +1,5 @@
 const LIMIT = 100
-const FUNCTION_END_POINT = "https://sentence-embedding-eatrmwevgq-ew.a.run.app/";
+const FUNCTION_END_POINT = "https://sentence-arithmetic-embeddings-mygs3pzknq-df.a.run.app";
 
 Papa.parse("data/embeddings.csv", {
   download: true, header: true, complete: function (raw) {
@@ -145,7 +145,6 @@ function makeSentenceConnectorPlugin() {
       const dp1 = chart.getDatasetMeta(1).data[index]
 
       ctx.lineWidth = opts.width || 0;
-      ctx.setLineDash(opts.dash || []);
       ctx.strokeStyle = opts.color || "black"
 
       ctx.save();
