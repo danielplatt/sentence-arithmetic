@@ -14,11 +14,12 @@
 
 ## Data generation:
 
-1. Put .txt files in data/raw (can be in subfolders)
+1. Run https://github.com/pgcorpus/gutenberg to download Gutenberg books. (At time of writing, aleph.gutenberg.org doesn't work, and I used gutenberg.pglaf.org::gutenberg instead.)
+2. Put .txt files in data/raw (can be in subfolders)
 
-2. Run data/generate_dataset.py
+3. Run data/generate_dataset.py
 
-3. New active/sentence pairs will be appended to data/processed/active_passive.tsv
+4. New active/sentence pairs will be appended to data/processed/active_passive.tsv
 
 ## Data analysis on simple example sentences
 
