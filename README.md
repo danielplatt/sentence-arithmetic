@@ -15,11 +15,14 @@
 ## Data generation:
 
 1. Run https://github.com/pgcorpus/gutenberg to download Gutenberg books. (At time of writing, aleph.gutenberg.org doesn't work, and I used gutenberg.pglaf.org::gutenberg instead.)
+   
 2. Put .txt files in data/raw (can be in subfolders)
 
 3. Run data/generate_dataset.py
 
-4. New active/sentence pairs will be appended to data/processed/active_passive.tsv
+4. New active/sentence pairs will be appended to data/processed/active_passive_full.tsv
+
+5. Run beautify_sentences.py which generates active_passive_full_beautiful.tsv. It removes notoriously poorly parsed sentences containing semicolons, parentheses, and quotation marks. Also converts to truecase.
 
 ## Data analysis on simple example sentences
 
