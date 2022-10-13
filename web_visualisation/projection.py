@@ -27,3 +27,5 @@ def projection(sentence: str) -> tuple:
 
 if __name__ == '__main__':
     print(projection('In cases of dispute the matter shall be resolved by the judgement of the twenty-five barons referred to below in the clause for securing the peace.'))
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model.save('all-MiniLM-L6-v2_pretrained')
