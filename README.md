@@ -24,6 +24,8 @@
 
 5. Run beautify_sentences.py which generates active_passive_full_beautiful.tsv. It removes notoriously poorly parsed sentences containing semicolons, parentheses, and quotation marks. Also converts to truecase.
 
+6. Run embedding.py, which will create the embeddings saved in active_passive_embedding_full.npy and will create a list of sentence pairs active_passive_full_cleaned.tsv, which has removed pairs of which at least one sentence can't be embedded
+
 ## Data analysis on simple example sentences
 
 1. Run generator.py
