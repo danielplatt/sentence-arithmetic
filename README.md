@@ -2,17 +2,15 @@
 
 ## Download ready data
 
-1. `active_passive_full.tsv`. 345877 active/passive sentence pairs: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/EaUhddafyjxHju8xYigPisgBYFWNavQzZIhrkHnR2sOvXg?e=lmfuun
+1. `active_passive_full_cleaned.tsv`. XXX active/passive sentence pairs where pairs from the previous table have been removed if at least one of their sentences generates an error when attempting to embed it: https://drive.google.com/file/d/14moVBIYh3FIv0sFd8feCBXczPtUN8Q3S/view?usp=sharing
 
-2. `active_passive_full_cleaned.tsv`. 345555 active/passive sentence pairs where pairs from the previous table have been removed if at least one of their sentences generates an error when attempting to embed it: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/EbhMHe657_1ClOvUghbswPoBo_iXf-T4Tv4huxz7QKKAMQ?e=xwwgYR
+2. `active_passive_embedding_full.npy`. A numpy array of size `(2, XXX, 768)` containing all sentence embeddings: https://drive.google.com/file/d/14owjH6qxQocC8Tf3VMN5IFnTCNnkNdJu/view?usp=sharing
 
-3. `active_passive_embedding_full.npy`. A numpy array of size `(2, 345555, 768)` containing all sentence embeddings: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/Ea56oqCJsxBGtS20i8vUQy4B9dna46wLh6dH-Q8k6yiWiQ?e=V6zSvF
+3. `preprocessed_embeddings.csv`. Two-dimensional embeddings together with sentences prepared for the web visualisation: https://drive.google.com/file/d/14kyeDF9fSEehohGEmLSNnLCtxwN7I_AC/view?usp=sharing
 
-4. `preprocessed_embeddings.csv`. Two-dimensional embeddings together with sentences prepared for the web visualisation: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/EVY5mgGg71xAqHuqAZoLhB0B-W42a3a0FOv6G2_NM-KX_Q?e=5BIHnx
+4. `PCA_basis.json`. The basis of the 2-dimensional subspace of 768-dimensional space used in the generation of preprocessed_embeddings.csv: https://drive.google.com/file/d/14mLsgTqWFT1QOfQsE6ytUCRLPpcxcmyC/view?usp=sharing
 
-5. `PCA_basis.json`. The basis of the 2-dimensional subspace of 768-dimensional space used in the generation of preprocessed_embeddings.csv: https://emckclac-my.sharepoint.com/:u:/g/personal/k2149901_kcl_ac_uk/ERx7d8DPd8VHhjwMNLRmaQcBroEUg7nW8m1KxqscMQcovg?e=6bJLaV
-
-## Data generation:
+## Embedding generation:
 
 1. Run https://github.com/pgcorpus/gutenberg to download Gutenberg books. (At time of writing, aleph.gutenberg.org doesn't work, and I used gutenberg.pglaf.org::gutenberg instead.)
    
@@ -25,6 +23,10 @@
 5. Run beautify_sentences.py which generates active_passive_full_beautiful.tsv. It removes notoriously poorly parsed sentences containing semicolons, parentheses, and quotation marks. Also converts to truecase.
 
 6. Run embedding.py, which will create the embeddings saved in active_passive_embedding_full.npy and will create a list of sentence pairs active_passive_full_cleaned.tsv, which has removed pairs of which at least one sentence can't be embedded
+
+## Data generation for web visualisation
+
+1. Run prepare_preprocessed_data.py
 
 ## Data analysis on simple example sentences
 
