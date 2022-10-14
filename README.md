@@ -2,13 +2,13 @@
 
 ## Download ready data
 
-1. `active_passive_full_cleaned.tsv`. XXX active/passive sentence pairs where pairs from the previous table have been removed if at least one of their sentences generates an error when attempting to embed it: https://drive.google.com/file/d/14moVBIYh3FIv0sFd8feCBXczPtUN8Q3S/view?usp=sharing
+1. `active_passive_full_cleaned.tsv`. XXX active/passive sentence pairs where pairs from the previous table have been removed if at least one of their sentences generates an error when attempting to embed it: https://drive.google.com/file/d/15-VKI6DFYUdP01L0sRYm3erUBWcZpxni/view?usp=sharing
 
-2. `active_passive_embedding_full.npy`. A numpy array of size `(2, XXX, 768)` containing all sentence embeddings: https://drive.google.com/file/d/14owjH6qxQocC8Tf3VMN5IFnTCNnkNdJu/view?usp=sharing
+2. `active_passive_embedding_full.npy`. A numpy array of size `(2, XXX, 3xx)` containing all sentence embeddings: https://drive.google.com/file/d/14x5gg1BS1u6iYZnXVKs4SYmYaFluWVo_/view?usp=sharing
 
-3. `preprocessed_embeddings.csv`. Two-dimensional embeddings together with sentences prepared for the web visualisation: https://drive.google.com/file/d/14kyeDF9fSEehohGEmLSNnLCtxwN7I_AC/view?usp=sharing
+3. `preprocessed_embeddings.csv`. Two-dimensional embeddings together with sentences prepared for the web visualisation: https://drive.google.com/file/d/14q1HShc48wcrMgc_S7YQpzoz1F4AFHQu/view?usp=sharing
 
-4. `PCA_basis.json`. The basis of the 2-dimensional subspace of 768-dimensional space used in the generation of preprocessed_embeddings.csv: https://drive.google.com/file/d/14mLsgTqWFT1QOfQsE6ytUCRLPpcxcmyC/view?usp=sharing
+4. `PCA_basis.json`. The basis of the 2-dimensional subspace of 3xx-dimensional space used in the generation of preprocessed_embeddings.csv: https://drive.google.com/file/d/14umb2MdU9AGn-3oqeCvfOECIYlrZxzsL/view?usp=sharing
 
 ## Embedding generation:
 
