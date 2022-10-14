@@ -13,7 +13,7 @@ from tqdm import tqdm
 # Choose a default model here.
 from sentence_transformers import SentenceTransformer
 
-default_model_str = 'all-mpnet-base-v2'
+default_model_str = 'all-MiniLM-L6-v2' # 'all-mpnet-base-v2'
 
 
 # Sentence (or list of sentences) to embedding(s)
@@ -219,7 +219,7 @@ def compute_simple_example_jumbled_embeddings():
 
 def compute_active_passive_literature_embeddings():
     try:
-        sentences_csv_to_embedding(csvfile='../data/processed/active_passive_full.tsv',
+        sentences_csv_to_embedding(csvfile='../data/processed/active_passive_full_beautiful.tsv',
                                    save_npy='../data/processed/active_passive_embedding_full.npy', truncate=None, csv_separator='\t', csv_has_line_numbers=False, header=None, save_cleaned_sentence_list=True)
     except FileNotFoundError as e:
         print('Cannot find active passive from literature sentences .tsv file. Unzipping active_passive.tsv.zip should fix this problem.')
