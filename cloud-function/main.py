@@ -52,15 +52,9 @@ def classify(sentence: str) -> dict:
     # models can be saved using model.save(model_path)
     embedding = model.encode(sentence).tolist()
 
-    # TODO: currently, this just doubles the 384-dim vector which has no meaning. Need to
-    # recompute the embeddings with the new small model
-    embedding = embedding+embedding
-
     json_basis_path = path.join(path.dirname(path.abspath(__file__)), 'preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json')
     with open(json_basis_path) as f:
         basis_loaded = json.load(f)
-
-    # basis_loaded = [vector[:384] for vector in basis_loaded]
 
     projected_vector = project_linear_algebra(embedding, basis_loaded)
     return {
