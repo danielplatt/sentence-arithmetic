@@ -12,6 +12,7 @@ gcloud functions deploy sentence-arithmetic-embeddings \
   --allow-unauthenticated \
   --entry-point=classify_http \
   --memory=3GB \
+  --min-instances=1 \
   --max-instances=16 \
   --runtime=python39
 ```
