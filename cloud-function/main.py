@@ -8,7 +8,6 @@ import os
 from os import path
 
 
-# TODO needs to be stricter once frontend URL is known
 @cross_origin(origins=["https://danielplatt.github.io"], allowed_methods=["POST"])
 @functions_framework.http
 def classify_http(request):
@@ -34,6 +33,7 @@ def project_linear_algebra(vec, basis):
     '''
     return np.inner(vec, basis[0]), np.inner(vec, basis[1])
 
+
 def classify(sentence: str) -> dict:
     '''
     Transforms a sentence into a two-dimensional vector.
@@ -48,11 +48,12 @@ def classify(sentence: str) -> dict:
     :return: A two-dimensional vector stored as a dictionary {"x": 0.562397, "y": -0.245144}.
     '''
     model_path = path.join(path.dirname(path.abspath(__file__)), 'all-MiniLM-L6-v2_pretrained')
-    model = SentenceTransformer(model_path) # loading model from pretrained_model directory.
+    model = SentenceTransformer(model_path)  # loading model from pretrained_model directory.
     # models can be saved using model.save(model_path)
     embedding = model.encode(sentence).tolist()
 
-    json_basis_path = path.join(path.dirname(path.abspath(__file__)), 'preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json')
+    json_basis_path = path.join(path.dirname(path.abspath(__file__)),
+                                'preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json')
     with open(json_basis_path) as f:
         basis_loaded = json.load(f)
 
@@ -61,7 +62,6 @@ def classify(sentence: str) -> dict:
         "x": projected_vector[0],
         "y": projected_vector[1],
     }
-
 
 # if __name__ == '__main__':
 #     print(classify('The dog chases the car.'))
