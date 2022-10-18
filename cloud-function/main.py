@@ -9,7 +9,7 @@ from os import path
 
 
 # TODO needs to be stricter once frontend URL is known
-@cross_origin(allowed_methods=["POST"])
+@cross_origin(origins=["https://danielplatt.github.io"], allowed_methods=["POST"])
 @functions_framework.http
 def classify_http(request):
     request_json = request.get_json(silent=True)
