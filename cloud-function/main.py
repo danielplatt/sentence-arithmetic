@@ -1,11 +1,11 @@
-from flask import jsonify
-from flask_cors import cross_origin
+import json
+from os import path
+
 import functions_framework
 import numpy as np
+from flask import jsonify
+from flask_cors import cross_origin
 from sentence_transformers import SentenceTransformer
-import json
-import os
-from os import path
 
 
 @cross_origin(origins=["https://danielplatt.github.io"], allowed_methods=["POST"])
@@ -47,13 +47,12 @@ def classify(sentence: str) -> dict:
     or 'the car is chases by The dog. ' Need not be grammatically correct or meaningful.
     :return: A two-dimensional vector stored as a dictionary {"x": 0.562397, "y": -0.245144}.
     '''
-    model_path = path.join(path.dirname(path.abspath(__file__)), 'all-MiniLM-L6-v2_pretrained')
+    model_path = path.join(path.dirname(path.abspath(__file__)), "all-MiniLM-L6-v2_pretrained")
     model = SentenceTransformer(model_path)  # loading model from pretrained_model directory.
     # models can be saved using model.save(model_path)
     embedding = model.encode(sentence).tolist()
 
-    json_basis_path = path.join(path.dirname(path.abspath(__file__)),
-                                'preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json')
+    json_basis_path = path.join(path.dirname(path.abspath(__file__)), "preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json")
     with open(json_basis_path) as f:
         basis_loaded = json.load(f)
 
@@ -62,6 +61,3 @@ def classify(sentence: str) -> dict:
         "x": projected_vector[0],
         "y": projected_vector[1],
     }
-
-# if __name__ == '__main__':
-#     print(classify('The dog chases the car.'))
