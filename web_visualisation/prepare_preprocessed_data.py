@@ -35,7 +35,7 @@ def main():
         ] for emb in embeddings
     ]
     projected_embeddings = np.reshape(projected_embeddings, (-1, 4))
-    new_df = pd.concat([sentences, pd.DataFrame(projected_embeddings[:NUMBER_OF_EXAMPLES])], axis=1)
+    new_df = pd.concat([sentences[:NUMBER_OF_EXAMPLES], pd.DataFrame(projected_embeddings[:NUMBER_OF_EXAMPLES])], axis=1)
     new_df.columns = [
         'passive_sentence',
         'active_sentence',
