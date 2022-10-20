@@ -9,6 +9,7 @@ def get_differences(emb):
     return emb[0]-emb[1]
 
 def get_projection_vectors(vecs):
+    print(vecs.shape)
     mean = np.mean(vecs, axis=0)
     pca = PCA()
     pca.fit(vecs)
