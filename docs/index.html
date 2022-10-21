@@ -16,29 +16,25 @@
 
 <header class="container">
   <hgroup>
-    <h1>Sentence Arithmetic</h1>
-    <h2>A basic custom template for Pico using only CSS custom properties (variables).</h2>
+    <h1>Effect of active voice and passive voice on sentence embeddings</h1>
+    <h2>An interactive visualisation tool for embeddings auf active/passive voice sentence</h2>
   </hgroup>
 </header>
 
 <main class="container">
   <section id="introduction">
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum consequat tristique. Duis vulputate,
-      mauris non suscipit sodales, augue magna ultrices dui, luctus venenatis eros velit in elit. Proin a lacus et diam
-      ornare pharetra. Maecenas at mollis nibh, at congue mauris. Curabitur vitae felis a massa feugiat vehicula
-      hendrerit sed massa. Etiam a faucibus est, ut vehicula orci. Integer rutrum tellus et aliquam rutrum. Aliquam id
-      metus sodales augue scelerisque dapibus efficitur in augue.
+      Here you can experiment with sentence embeddings that take a sentence and produce a point in the plane. Behind the scenes, a point in 384 dimensions is computed, but for simplicity we produce a two-dimensional picture from this. Like the English language, the picture is quite complicated. One thing you can see is that for most pairs of active/passive voice sentences, the passive voice sentence is to the lower right of the active sentence. You can try this out with your own sentence pair! If you want to learn more about, you can read our article in which me measured and quantified this phenomenon. The corresponding article is:
     </p>
     <blockquote>
-      Provide suggested citation...
+      Daniel Platt, Moritz Platt, Rodrigo Barbosa, Chris Evans: Effect of active voice and passive voice on sentence embeddings
     </blockquote>
   </section>
 
   <section id="instructions">
     <h2>Instructions</h2>
     <p>
-      Explain what the visitor should do...
+      Type an active/passive voice sentence pair into the boxes below and click submit. For example, you can try the following pair. Passive: "The car is chased by the dog." Active: "The dog chases the car." You will see two dots appear in the picture below: one for your active sentence, one for your passive sentence. Typically, the passive sentence is to the bottom right of the active sentence. For some rare sentence pairs, that is not the case, but we were unable to figure out when exactly that happens. If you have problems using this tool, or any ideas, comments, or questions about the project, please contact us at <a href="mailto:daniel.platt.berlin@gmail.com">daniel.platt.berlin@gmail.com</a>.
     </p>
   </section>
 
@@ -46,12 +42,10 @@
     <form method="get" action="#sentences">
       <label for="passive">Passive Sentence</label>
       <input type="text" id="passive" name="passive" value="The car was chased by the dog.">
-      <small>Curabitur consequat lacus at lacus porta finibus.</small>
 
 
       <label for="active">Active Sentence</label>
       <input type="text" id="active" name="active" value="The dog chased the car.">
-      <small>Curabitur consequat lacus at lacus porta finibus.</small>
 
       <input type="submit" value="Submit">
     </form>
