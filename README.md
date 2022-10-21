@@ -22,44 +22,27 @@
 
 5. Run beautify_sentences.py which generates active_passive_full_beautiful.tsv. It removes notoriously poorly parsed sentences containing semicolons, parentheses, and quotation marks. Also converts to truecase.
 
-6. Run embedding.py, which will create the embeddings saved in active_passive_embedding_full.npy and will create a list of sentence pairs active_passive_full_cleaned.tsv, which has removed pairs of which at least one sentence can't be embedded
+6. Run embedding.py. Make sure line 'compute_active_passive_literature_embeddings()' is not commented out and line 'compute_active_passive_literature_jumbled_embeddings()' is commented out. This will create the embeddings saved in active_passive_embedding_full.npy and will create a list of sentence pairs active_passive_full_cleaned.tsv, which has removed pairs of which at least one sentence can't be embedded
 
 ## Data generation for web visualisation
 
 1. Run prepare_preprocessed_data.py
 
-## Data analysis on simple example sentences
-
-1. Run generator.py
-
-2. Run embedding.py
-
-3. Do your own stuff with the sentence embeddings
-
-## Active-passive simple sentences results (by Daniel)
-
-1. Run generator.py, embedding.py to generate the necessary data
-2. Run PCA_alternative.py, make sure that the line emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:] is not commented out. This loads the simple example sentences. This generates the images results/img/active_passive_simple_sentences_individual_arrows_visualisation.png and active_passive_simple_sentences_visualisation.png:
-   ![Visualisation of active-passive sentences in dimension 2](results/img/active_passive_simple_sentences_visualisation.png)
-   ![Visualisation of active-passive sentences with individual difference vectorsin dimension 2](results/img/active_passive_simple_sentences_individual_arrows_visualisation.png)
    
 ## Active-passive real life sentences results (by Daniel)
 
-1. Unzip the file data/processed/active_passive.tsv.zip in the same folder
+1. Ensure file active_passive_embedding_full.npy exists
 2. Run PCA_alternative.py, make sure that the line emb = get_sentence_embeddings('../data/processed/active_passive_embedding.npy')[:,:10000,:] is not commented out. This loads the real life example sentences. This generates the images results/img/active_passive_real_life_sentences_visualisation.png and active_passive_real_life_sentences_individual_arrows_visualisation.png:
    ![Visualisation of active-passive sentences in dimension 2](results/img/active_passive_real_life_sentences_visualisation.png)
    ![Visualisation of active-passive sentences with individual difference vectorsin dimension 2](results/img/active_passive_real_life_sentences_individual_arrows_visualisation.png)
    
 ## Testing if the (active sentence)-(passive sentence) is roughly the same for all sentences for real life sentences
 
-1. Unzip the file `data/processed/active_passive.tsv.zip` in the same folder
-2. Run `jumble_sentences.py` and make sure the line 
-`jumble_file('processed/active_passive.tsv', 'processed/active_passive_jumbled.tsv', csv_separator='\t')`
-   is not commented out. This generates `active_passive_jumbled.tsv`.
-3. Run `embedding.py` and make sure the lines 
- `compute_active_passive_literature_embeddings()` and 
+1. Ensure file active_passive_embedding_full.npy exists
+2. Run `jumble_sentences.py`
+3. Run `embedding.py` and make sure the line
  `compute_active_passive_literature_jumbled_embeddings()`
-are not commented out. This generates the files `active_passive_embedding.npy` and `active_passive_jumbled_embedding.npy`.
+is not commented out. This generates the files `active_passive_jumbled_embedding.npy`.
 4. `Run nearest_embedding_experiment.py` and make sure the lines `    run_experiment_suite(
         '../data/processed/active_passive_embedding.npy',
         '../data/processed/active_passive_jumbled_embedding.npy',
@@ -125,3 +108,18 @@ Now computing for how many sentences A_i+avgerage_diff is closest to B_i:
 100%|██████████| 50000/50000 [20:47:28<00:00,  1.50s/it]
 For 48411/50000 (96.82%) sentences A_i+avgerage_diff is closest to B_i.
 ```
+
+## obsolete: Data analysis on simple example sentences
+
+1. Run generator.py
+
+2. Run embedding.py
+
+3. Do your own stuff with the sentence embeddings
+
+## obsolete: Active-passive simple sentences results (by Daniel)
+
+1. Run generator.py, embedding.py to generate the necessary data
+2. Run PCA_alternative.py, make sure that the line emb = get_sentence_embeddings('data/simple_example_sentences_embedding.npy')#[:,:10000,:] is not commented out. This loads the simple example sentences. This generates the images results/img/active_passive_simple_sentences_individual_arrows_visualisation.png and active_passive_simple_sentences_visualisation.png:
+   ![Visualisation of active-passive sentences in dimension 2](results/img/active_passive_simple_sentences_visualisation.png)
+   ![Visualisation of active-passive sentences with individual difference vectorsin dimension 2](results/img/active_passive_simple_sentences_individual_arrows_visualisation.png)

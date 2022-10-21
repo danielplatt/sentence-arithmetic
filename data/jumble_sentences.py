@@ -2,7 +2,7 @@ import pandas as pd
 import random
 
 
-def read_data(csv='processed/active_passive.tsv', csv_separator='\t'):
+def read_data(csv='processed/active_passive_full_beautiful.tsv', csv_separator='\t'):
     try:
         return pd.read_csv(csv, sep=csv_separator, on_bad_lines='skip', header=None)
     except FileNotFoundError as e:
@@ -40,8 +40,8 @@ def jumble_file(source_csv, target_csv, csv_separator='\t'):
 
 
 if __name__ == '__main__':
-    # jumble_file('processed/active_passive.tsv', 'processed/active_passive_jumbled.tsv', csv_separator='\t')
-    jumble_file(
-        '../PCAetc/data/simple_example_sentences.csv',
-        '../PCAetc/data/simple_example_sentences_jumbled.csv',
-        csv_separator=',')
+    jumble_file('processed/active_passive_full_beautiful.tsv', 'processed/active_passive_jumbled.tsv', csv_separator='\t')
+    # jumble_file(
+    #     '../PCAetc/data/simple_example_sentences.csv',
+    #     '../PCAetc/data/simple_example_sentences_jumbled.csv',
+    #     csv_separator=',')

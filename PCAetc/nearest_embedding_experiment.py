@@ -12,13 +12,19 @@ log = get_logger(__name__, with_logfile=False, level=logging.INFO)
 
 def find_nearest_embedded_sentence_experiment(embeddings_A, embeddings_B, number_of_sentences=0):
     # emb = get_sentence_embeddings(source)[:, :number_of_sentences, :]
-    assert len(embeddings_A) == len(embeddings_B)
+    # assert len(embeddings_A) == len(embeddings_B) # TODO reactivate this check once all jumbled embeddings have been computed
+
+    # compute average diff before truncating
+    n = min(len(embeddings_A), len(embeddings_B))
+    diff = embeddings_B[:n]-embeddings_A[:n]
+    print(f'Computing average difference vector for {len(diff)} sentence pairs')
+    average_diff = np.average(diff, axis=0)
+
+    # now truncate
     embeddings_A = embeddings_A[:number_of_sentences]
     embeddings_B = embeddings_B[:number_of_sentences]
-    diff = embeddings_B-embeddings_A
-    average_diff = np.average(diff, axis=0)
     nearest_count = 0
-    print('Now computing for how many sentences A_i+avgerage_diff is closest to B_i:')
+    print(f'Now computing for how many of {len(embeddings_A)} sentences A_i+avgerage_diff is closest to B_i:')
     for k, sentence_A in tqdm(enumerate(embeddings_A), total=len(embeddings_A)):
         distances = [distance.cosine(sentence_A+average_diff, sentence_B) for sentence_B in embeddings_B]
         nearest_indices = np.argsort(distances)
@@ -28,27 +34,22 @@ def find_nearest_embedded_sentence_experiment(embeddings_A, embeddings_B, number
     return nearest_count, len(embeddings_A)
 
 def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, truncate=10000):
-    original_embeddings = get_sentence_embeddings(original_sentences_npy)[:, :truncate, :]
-    jumbled_embeddings = get_sentence_embeddings(jumbled_sentences_npy)[:, :truncate, :]
+    original_embeddings = get_sentence_embeddings(original_sentences_npy)#[:, :truncate, :]
+    jumbled_embeddings = get_sentence_embeddings(jumbled_sentences_npy)#[:, :truncate, :]
 
-    print('Experiment 1: Original passive-Original active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=truncate)
-    print('------------------')
-    print('Experiment 2: Original passive-Jumbled active')
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=truncate)
-    print('------------------')
+    # print('Experiment 1: Original passive-Original active')
+    # find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=truncate)
+    # print('------------------')
+    # print('Experiment 2: Original passive-Jumbled active')
+    # find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=truncate)
+    # print('------------------')
     print('Experiment 3: Original passive-Jumbled passive')
     find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=truncate)
 
 
 if __name__ == '__main__':
     run_experiment_suite(
-        '../data/processed/active_passive_embedding.npy',
+        '../data/processed/active_passive_embedding_full.npy',
         '../data/processed/active_passive_jumbled_embedding.npy',
-        truncate=1000
+        truncate=10000
     )
-    # run_experiment_suite(
-    #     'data/simple_example_sentences_embedding.npy',
-    #     'data/simple_example_sentences_jumbled_embedding.npy',
-    #     truncate=50000
-    # )

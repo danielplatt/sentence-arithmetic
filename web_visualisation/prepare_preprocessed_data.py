@@ -21,18 +21,10 @@ def main():
     assert len(sentences) == embeddings.shape[1] # number of sentences should be same as number of embeddings
 
     differences = get_differences(embeddings)
-    active_differences = get_differences(embeddings[0])
-    print(embeddings.shape)
+    print(f'Embeddings shape: {embeddings.shape}')
     transposed_differences = np.transpose(differences, (1,0))
-    print(transposed_differences.shape)
 
-
-    # exit()
     basis = get_projection_vectors(transposed_differences[:NUMBER_OF_EXAMPLES])
-    # basis2 = get_projection_vectors(differences)
-
-    # print(basis[0])
-    # print(basis2[0])
 
     test_vec = np.zeros(384)
     test_vec[0] = 1
@@ -44,28 +36,12 @@ def main():
         assert np.array_equal(np.array(basis), np.array(basis_loaded))
 
     transposed_embeddings = np.transpose(embeddings, (2,0,1))
-    # print(transposed_embeddings.shape)
-    # for emb in transposed_embeddings:
-    #     print(emb[0].shape)
-    #     print(np.array(basis).shape)
-    #     exit()
     projected_embeddings = [
         [
             project(emb[0], basis),
             project(emb[1], basis)
         ] for emb in transposed_embeddings
     ]
-    # projected_embeddings2 = [
-    #     [
-    #         project(emb[0], basis2),
-    #         project(emb[1], basis2)
-    #     ] for emb in embeddings
-    # ]
-    # print(basis[0][0])
-    # print(basis2[0][0])
-    # print(project(test_vec, basis))
-    # print(project(test_vec, basis2))
-    # exit()
     projected_embeddings = np.reshape(projected_embeddings, (-1, 4))
     new_df = pd.concat([sentences[:NUMBER_OF_EXAMPLES], pd.DataFrame(projected_embeddings[:NUMBER_OF_EXAMPLES])], axis=1)
     new_df.columns = [
