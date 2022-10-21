@@ -11,10 +11,10 @@ def detect_parentheses(sent):
     return ('(' in sent) or (')' in sent)
 
 def detect_quotation_marks(sent):
-    return ('"' in sent) or ("'" in sent)
+    return ('"' in sent) or ("'" in sent) or ('`' in sent)
 
 def detect_banned_characters(sent):
-    return detect_colon(sent) or detect_parentheses(sent) or detect_quotation_marks(sent)
+    return detect_colon(sent) or detect_parentheses(sent) or detect_quotation_marks(sent) or ('_' in sent) or ('--' in sent) or ('|' in sent) or ('#' in sent) or ('*' in sent) or ('+' in sent) or ('=' in sent) or ('~' in sent) or ('[' in sent) or (']' in sent) or (':' in sent) or ('<' in sent) or ('>' in sent) or ('/' in sent) or ('\\' in sent)
 
 def process_sentence(sent):
     if detect_colon(sent) or detect_parentheses(sent):
@@ -35,10 +35,10 @@ def beautify_dataset(filename_in='active_passive_full.tsv', filename_out='active
         datareader = csv.reader(in_f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
         for row in tqdm(datareader, total=row_count):
-                if not detect_banned_characters(row[0]):
+                if not detect_banned_characters(row[0]) and not detect_banned_characters(row[1]):
                     try:
                         with open(output_path, 'a') as out_f:
-                            out_f.write(row[0] + '\t' + process_sentence(row[1]) + '\n')
+                            out_f.write(process_sentence(row[0]) + '\t' + process_sentence(row[1]) + '\n')
                     except IndexError as _:
                         print(f'Cannot beautify sentence pair {row}. Maybe no active sentence there? Skipping to next.')
                         input('')

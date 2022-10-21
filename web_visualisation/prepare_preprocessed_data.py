@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import os
 import pandas as pd
 from scipy.spatial import distance
 from tqdm import tqdm
@@ -12,7 +13,7 @@ import logging
 
 
 def main():
-    NUMBER_OF_EXAMPLES = 1000
+    NUMBER_OF_EXAMPLES = 200
     embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding_full.npy') # shape=(2, -1, 768)
     embeddings = np.transpose(embeddings, (0,2,1))
     num_embeddings = embeddings.shape[1]
@@ -75,7 +76,9 @@ def main():
         'active_x_coord',
         'active_y_coord'
     ]
-    new_df.to_csv('app/data/embeddings.csv', index=False, sep=',')
+    dirpath = os.path.dirname(os.path.realpath(__file__))
+    out_path = os.path.join(dirpath, '../docs/data/embeddings.csv')
+    new_df.to_csv(out_path, index=False, sep=',')
 
 
 if __name__ == '__main__':
