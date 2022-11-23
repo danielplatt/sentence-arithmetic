@@ -23,12 +23,12 @@ def main():
     assert len(sentences) == embeddings.shape[2] # number of sentences should be same as number of embeddings
 
     differences = get_differences(embeddings)
-    print(f'Embeddings shape: {embeddings.shape}')
     transposed_differences = np.transpose(differences, (1,0))
 
     # truncate
     new_indices = random.sample(range(len(transposed_differences)), NUMBER_OF_EXAMPLES)
     transposed_differences = np.array([transposed_differences[index] for index in new_indices])
+
     transposed_embeddings = np.array([transposed_embeddings[index] for index in new_indices])
     sentences = sentences.iloc[new_indices]
 
@@ -51,7 +51,7 @@ def main():
         ] for emb in transposed_embeddings
     ]
     projected_embeddings = np.reshape(projected_embeddings, (-1, 4))
-    new_df = pd.concat([sentences, pd.DataFrame(projected_embeddings)], axis=1)
+    new_df = pd.concat([sentences.reset_index(drop=True, inplace=False), pd.DataFrame(projected_embeddings)], axis=1)
     new_df.columns = [
         'passive_sentence',
         'active_sentence',
@@ -60,6 +60,7 @@ def main():
         'active_x_coord',
         'active_y_coord'
     ]
+    print(new_df)
     dirpath = os.path.dirname(os.path.realpath(__file__))
     out_path = os.path.join(dirpath, '../docs/data/embeddings.csv')
     new_df.to_csv(out_path, index=False, sep=',')
