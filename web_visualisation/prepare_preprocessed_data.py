@@ -19,8 +19,8 @@ def main():
     embeddings = np.transpose(embeddings, (0,2,1))
     transposed_embeddings = np.transpose(embeddings, (2, 0, 1))
     num_embeddings = embeddings.shape[1]
-    sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip').truncate(after=num_embeddings-1)
-    assert len(sentences) == embeddings.shape[1] # number of sentences should be same as number of embeddings
+    sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip')
+    assert len(sentences) == embeddings.shape[2] # number of sentences should be same as number of embeddings
 
     differences = get_differences(embeddings)
     print(f'Embeddings shape: {embeddings.shape}')
@@ -28,9 +28,9 @@ def main():
 
     # truncate
     new_indices = random.sample(range(len(transposed_differences)), NUMBER_OF_EXAMPLES)
-    transposed_differences = [transposed_differences[index] for index in new_indices]
-    transposed_embeddings = [transposed_embeddings[index] for index in new_indices]
-    sentences = [sentences[index] for index in new_indices]
+    transposed_differences = np.array([transposed_differences[index] for index in new_indices])
+    transposed_embeddings = np.array([transposed_embeddings[index] for index in new_indices])
+    sentences = sentences.iloc[new_indices]
 
     basis = get_projection_vectors(transposed_differences)
 
