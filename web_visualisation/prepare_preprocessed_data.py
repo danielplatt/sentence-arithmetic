@@ -27,6 +27,7 @@ def main():
 
     # truncate
     new_indices = random.sample(range(len(transposed_differences)), NUMBER_OF_EXAMPLES)
+    new_indices.sort()
     transposed_differences = np.array([transposed_differences[index] for index in new_indices])
 
     transposed_embeddings = np.array([transposed_embeddings[index] for index in new_indices])
@@ -37,9 +38,9 @@ def main():
     test_vec = np.zeros(384)
     test_vec[0] = 1
 
-    with open('preprocessed_data/PCA_basis.json', 'w') as f:
+    with open('../cloud-function/preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json', 'w') as f:
         json.dump(np.array(basis).tolist(), f)
-    with open('preprocessed_data/PCA_basis.json') as f:
+    with open('../cloud-function/preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json') as f:
         basis_loaded = json.load(f)
         assert np.array_equal(np.array(basis), np.array(basis_loaded))
 
