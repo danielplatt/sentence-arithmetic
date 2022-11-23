@@ -2,6 +2,7 @@ import json
 import numpy as np
 import os
 import pandas as pd
+import random
 from scipy.spatial import distance
 from tqdm import tqdm
 
@@ -16,6 +17,7 @@ def main():
     NUMBER_OF_EXAMPLES = 200
     embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding_full.npy') # shape=(2, -1, 768)
     embeddings = np.transpose(embeddings, (0,2,1))
+    transposed_embeddings = np.transpose(embeddings, (2, 0, 1))
     num_embeddings = embeddings.shape[1]
     sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip').truncate(after=num_embeddings-1)
     assert len(sentences) == embeddings.shape[1] # number of sentences should be same as number of embeddings
@@ -24,7 +26,13 @@ def main():
     print(f'Embeddings shape: {embeddings.shape}')
     transposed_differences = np.transpose(differences, (1,0))
 
-    basis = get_projection_vectors(transposed_differences[:NUMBER_OF_EXAMPLES])
+    # truncate
+    new_indices = random.sample(range(len(transposed_differences)), NUMBER_OF_EXAMPLES)
+    transposed_differences = [transposed_differences[index] for index in new_indices]
+    transposed_embeddings = [transposed_embeddings[index] for index in new_indices]
+    sentences = [sentences[index] for index in new_indices]
+
+    basis = get_projection_vectors(transposed_differences)
 
     test_vec = np.zeros(384)
     test_vec[0] = 1
@@ -35,7 +43,7 @@ def main():
         basis_loaded = json.load(f)
         assert np.array_equal(np.array(basis), np.array(basis_loaded))
 
-    transposed_embeddings = np.transpose(embeddings, (2,0,1))
+
     projected_embeddings = [
         [
             project(emb[0], basis),
@@ -43,7 +51,7 @@ def main():
         ] for emb in transposed_embeddings
     ]
     projected_embeddings = np.reshape(projected_embeddings, (-1, 4))
-    new_df = pd.concat([sentences[:NUMBER_OF_EXAMPLES], pd.DataFrame(projected_embeddings[:NUMBER_OF_EXAMPLES])], axis=1)
+    new_df = pd.concat([sentences, pd.DataFrame(projected_embeddings)], axis=1)
     new_df.columns = [
         'passive_sentence',
         'active_sentence',
