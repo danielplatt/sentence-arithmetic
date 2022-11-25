@@ -19,27 +19,28 @@ def main():
     embeddings = np.transpose(embeddings, (0,2,1))
     transposed_embeddings = np.transpose(embeddings, (2, 0, 1))
     num_embeddings = embeddings.shape[1]
-    sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip').truncate(after=num_embeddings-1)
-    assert len(sentences) == embeddings.shape[1] # number of sentences should be same as number of embeddings
+    sentences = pd.read_csv('../data/processed/active_passive_full_cleaned.tsv', header=None, sep='\t', on_bad_lines='skip')
+    assert len(sentences) == embeddings.shape[2] # number of sentences should be same as number of embeddings
 
     differences = get_differences(embeddings)
-    print(f'Embeddings shape: {embeddings.shape}')
     transposed_differences = np.transpose(differences, (1,0))
 
     # truncate
     new_indices = random.sample(range(len(transposed_differences)), NUMBER_OF_EXAMPLES)
-    transposed_differences = [transposed_differences[index] for index in new_indices]
-    transposed_embeddings = [transposed_embeddings[index] for index in new_indices]
-    sentences = [sentences[index] for index in new_indices]
+    new_indices.sort()
+    transposed_differences = np.array([transposed_differences[index] for index in new_indices])
+
+    transposed_embeddings = np.array([transposed_embeddings[index] for index in new_indices])
+    sentences = sentences.iloc[new_indices]
 
     basis = get_projection_vectors(transposed_differences)
 
     test_vec = np.zeros(384)
     test_vec[0] = 1
 
-    with open('preprocessed_data/PCA_basis.json', 'w') as f:
+    with open('../cloud-function/preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json', 'w') as f:
         json.dump(np.array(basis).tolist(), f)
-    with open('preprocessed_data/PCA_basis.json') as f:
+    with open('../cloud-function/preprocessed_data/PCA_basis_all-MiniLM-L6-v2.json') as f:
         basis_loaded = json.load(f)
         assert np.array_equal(np.array(basis), np.array(basis_loaded))
 
@@ -51,7 +52,7 @@ def main():
         ] for emb in transposed_embeddings
     ]
     projected_embeddings = np.reshape(projected_embeddings, (-1, 4))
-    new_df = pd.concat([sentences, pd.DataFrame(projected_embeddings)], axis=1)
+    new_df = pd.concat([sentences.reset_index(drop=True, inplace=False), pd.DataFrame(projected_embeddings)], axis=1)
     new_df.columns = [
         'passive_sentence',
         'active_sentence',
@@ -60,6 +61,7 @@ def main():
         'active_x_coord',
         'active_y_coord'
     ]
+    print(new_df)
     dirpath = os.path.dirname(os.path.realpath(__file__))
     out_path = os.path.join(dirpath, '../docs/data/embeddings.csv')
     new_df.to_csv(out_path, index=False, sep=',')
