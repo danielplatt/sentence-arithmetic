@@ -1,15 +1,16 @@
 import json
 from os import path
 
-import functions_framework
+# TODO reinstate imports
+#import functions_framework
 import numpy as np
 from flask import jsonify
-from flask_cors import cross_origin
+#from flask_cors import cross_origin
 from sentence_transformers import SentenceTransformer
 
-
-@cross_origin(origins=["https://danielplatt.github.io"], allowed_methods=["POST"])
-@functions_framework.http
+# TODO uncomment next two lines
+#@cross_origin(origins=["https://danielplatt.github.io"], allowed_methods=["POST"])
+#@functions_framework.http
 def classify_http(request):
     request_json = request.get_json(silent=True)
 
@@ -61,3 +62,9 @@ def classify(sentence: str) -> dict:
         "x": projected_vector[0],
         "y": projected_vector[1],
     }
+
+
+# TODO remove debugging
+if __name__ == '__main__':
+    print(classify('They were trained by the hills, and neither of them tried to mince words.'))
+    print(classify('They were trained by the hills and neither of them tried to mince words'))
