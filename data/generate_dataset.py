@@ -15,11 +15,11 @@ log = get_logger(__name__, with_logfile=False, level=logging.INFO)
 
 def get_raw_file_list():
     dirpath = os.path.dirname(os.path.realpath(__file__))
-    return glob.glob(dirpath + '/**/*.txt', recursive=True)
+    return glob.glob(dirpath + 'gutenberg_texts/**/*.txt', recursive=True)
 
 def process_single_string(textdoc, write_to_absolute_path):
     log.info('Using Spacy to parse document')
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_core_web_lg")
     doc = nlp(textdoc)
     log.info('Document successfully parsed. Beginning scanning for passive sentences.')
 
@@ -75,7 +75,7 @@ def generate_from_recent_authors(start_at_id=0, filename_out='active_passive.tsv
             except ValueError as e:
                 pass
             # now trying to locate the corresponding file
-            file_path = os.path.join(dirpath, 'text/' + row['id'] + '_text.txt')
+            file_path = os.path.join(dirpath, 'gutenberg_texts/' + row['id'] + '_raw.txt')
             print('Trying file %s of around 60000' % (k,))
             try:
                 with open(file_path, 'r') as read_obj:

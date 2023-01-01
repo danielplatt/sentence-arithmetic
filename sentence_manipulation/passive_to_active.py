@@ -122,6 +122,8 @@ def inflect_sentence(doc, tokenid, swap, level=0):
         if tokenid == swap[0]:
             root = doc[swap[2]]
         elif tokenid == swap[1]:
+            print('swap0')
+            print(swap[0])
             root = doc[swap[0]]
         elif tokenid == swap[2]:
             root = doc[swap[1]]
@@ -129,6 +131,9 @@ def inflect_sentence(doc, tokenid, swap, level=0):
             root = doc[tokenid]
 
     inflected_sentence = ''
+
+    #for left in list(root.lefts):
+    #    print(left)
 
     for left in list(root.lefts):
         inflected_sentence += inflect_sentence(doc, list(doc).index(left), swap, level=level+1)
@@ -140,7 +145,7 @@ def inflect_sentence(doc, tokenid, swap, level=0):
         inflected_sentence += replace_verb_and_change_singular_plural(aux, getLemma(root.text, upos='VERB')[0], is_pobj_third_pers_sing(doc))
         inflected_sentence += ' '
     else:
-        if root.dep_ == "pobj":
+        if root.dep_ == "pobj" and 'by' in [tok.text for tok in root.ancestors]:
             inflected_sentence += accusative_to_nominative(root.text)
         elif root.dep_ == "nsubjpass":
             inflected_sentence += nominative_to_accusative(root.text)
@@ -154,9 +159,19 @@ def inflect_sentence(doc, tokenid, swap, level=0):
 
 def get_agent_id(doc, root_id):
     root = doc[root_id]
+    agent_id = None
     for tok in root.children:
         if tok.dep_ == "agent":
-            return list(doc).index(tok)
+            agent_id = list(doc).index(tok)
+    # if agent_id == None:
+    #     for tok in root.children:
+    #         for childtok in tok.children:
+    #             print(childtok.text, childtok.dep_)
+    #             if childtok.dep_ == "prep":
+    #                 agent_id = list(doc).index(childtok)
+    return agent_id
+    # TODO: combine the two for loops
+
 
 def get_nsubjpass_id(doc, root_id):
     root = doc[root_id]
@@ -167,22 +182,25 @@ def get_nsubjpass_id(doc, root_id):
 def get_dobj_or_oprd(doc, root_id):
     root = doc[root_id]
     for tok in root.children:
-        print(tok.text, tok.dep_)
+        #print(tok.text, tok.dep_)
         if tok.dep_ == "dobj" or tok.dep_== "oprd":
             return list(doc).index(tok)
 
 def passive_to_active(sentence):
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(sentence)
+    #for k in doc:
+    #    print(k.text, k.dep_)
     first_root_id = get_first_root_id(doc)
     agent_id = get_agent_id(doc, first_root_id)
+    print('agentid', agent_id)
     nsubjpass_id = get_nsubjpass_id(doc, first_root_id)
     dobj_id = get_dobj_or_oprd(doc, first_root_id)
     if dobj_id == None:
         swap = (agent_id, nsubjpass_id)
     else:
         swap = (agent_id, nsubjpass_id, dobj_id)
-    print(len(swap))
+    #print(len(swap))
     root_id = get_first_root_id(doc)
     try:
         return inflect_sentence(doc, root_id, swap)
@@ -222,7 +240,8 @@ if __name__ == '__main__':
     nlp = spacy.load("en_core_web_sm")
     sentences = [
         'He had been given the best of education by his father, and had early experience in public affairs as governor of a province.',
-        'He was made chancellor by her.'
+        #'He was made chancellor by her.',
+        'Although Ligurians or Umbrians were probably at one time(5) settled there, the traces of them have been almost wholly effaced by the Etruscan occupation and civilization.'
     ]
     for sent in sentences:
         print(passive_to_active(sent))
