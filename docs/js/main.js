@@ -178,10 +178,6 @@ function drawChart(data, plugin) {
           callbacks: {
             label: function (ctx) {
               return ctx.dataset.sentences[ctx.dataIndex]
-                // Remove extra whitespace
-                .replace(/\s\s+/g, " ").trim()
-                // Split in arrays of 4 words
-                .match(/\b[\w']+(?:\s+[\w']+){0,4}/g);
             }
           }
         }
