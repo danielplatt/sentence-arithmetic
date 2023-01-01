@@ -53,10 +53,10 @@ def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, by_added
     by_added_embeddings = get_sentence_embeddings(by_added_sentences_npy)  # [:, :truncate, :]
 
     print('Experiment 1: Original passive-Original active')
-    #find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=truncate, zero_translation_test=False)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1], number_of_sentences=truncate, zero_translation_test=False)
     print('------------------')
     print('Experiment 2: Original passive-Jumbled active')
-    #find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=truncate)
+    find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[1], number_of_sentences=truncate)
     print('------------------')
     #print('Experiment 3: Original passive-Jumbled passive')
     #find_nearest_embedded_sentence_experiment(original_embeddings[0], jumbled_embeddings[0], number_of_sentences=truncate)
@@ -69,10 +69,6 @@ def run_experiment_suite(original_sentences_npy, jumbled_sentences_npy, by_added
 
 
 if __name__ == '__main__':
-    original_embeddings = get_sentence_embeddings('../data/processed/active_passive_embedding_full.npy')#[:, :truncate, :]
-    find_nearest_embedded_sentence_experiment(original_embeddings[0], original_embeddings[1],
-                                              number_of_sentences=100000, zero_translation_test=False, start_computation=500)
-
     run_experiment_suite(
         '../data/processed/active_passive_embedding_full.npy',
         '../data/processed/active_passive_jumbled_embedding.npy',
